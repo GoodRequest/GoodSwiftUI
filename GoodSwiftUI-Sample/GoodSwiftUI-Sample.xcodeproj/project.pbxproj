@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F9F28442A3AEC6000D92CA2 /* SamplesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9F28432A3AEC6000D92CA2 /* SamplesListView.swift */; };
+		3F9F28462A3AEC8B00D92CA2 /* GRAsyncImageSampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9F28452A3AEC8B00D92CA2 /* GRAsyncImageSampleView.swift */; };
+		3F9F28482A3AECC700D92CA2 /* GRAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 3F9F28472A3AECC700D92CA2 /* GRAsyncImage */; };
 		5D740EAD29B0BE0100975B8C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D740EAC29B0BE0100975B8C /* AppDelegate.swift */; };
 		5D740EB829B0BE0200975B8C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D740EB729B0BE0200975B8C /* Assets.xcassets */; };
 		5D740EBB29B0BE0200975B8C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D740EB929B0BE0200975B8C /* LaunchScreen.storyboard */; };
@@ -14,6 +17,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3F9F28432A3AEC6000D92CA2 /* SamplesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplesListView.swift; sourceTree = "<group>"; };
+		3F9F28452A3AEC8B00D92CA2 /* GRAsyncImageSampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GRAsyncImageSampleView.swift; sourceTree = "<group>"; };
 		5D740EA929B0BE0100975B8C /* GoodSwiftUI-Sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GoodSwiftUI-Sample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D740EAC29B0BE0100975B8C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5D740EB729B0BE0200975B8C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -27,6 +32,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F9F28482A3AECC700D92CA2 /* GRAsyncImage in Frameworks */,
 				5D740EC629B0BE7300975B8C /* GoodSwiftUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -34,6 +40,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3F9F28422A3AEC5200D92CA2 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				3F9F28432A3AEC6000D92CA2 /* SamplesListView.swift */,
+				3F9F28452A3AEC8B00D92CA2 /* GRAsyncImageSampleView.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
 		5D740EA029B0BE0100975B8C = {
 			isa = PBXGroup;
 			children = (
@@ -55,6 +70,7 @@
 		5D740EAB29B0BE0100975B8C /* GoodSwiftUI-Sample */ = {
 			isa = PBXGroup;
 			children = (
+				3F9F28422A3AEC5200D92CA2 /* Screens */,
 				5D740EAC29B0BE0100975B8C /* AppDelegate.swift */,
 				5D740EB729B0BE0200975B8C /* Assets.xcassets */,
 				5D740EB929B0BE0200975B8C /* LaunchScreen.storyboard */,
@@ -96,6 +112,7 @@
 			name = "GoodSwiftUI-Sample";
 			packageProductDependencies = (
 				5D740EC529B0BE7300975B8C /* GoodSwiftUI */,
+				3F9F28472A3AECC700D92CA2 /* GRAsyncImage */,
 			);
 			productName = "GoodSwiftUI-Sample";
 			productReference = 5D740EA929B0BE0100975B8C /* GoodSwiftUI-Sample.app */;
@@ -152,6 +169,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D740EAD29B0BE0100975B8C /* AppDelegate.swift in Sources */,
+				3F9F28462A3AEC8B00D92CA2 /* GRAsyncImageSampleView.swift in Sources */,
+				3F9F28442A3AEC6000D92CA2 /* SamplesListView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -363,6 +382,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3F9F28472A3AECC700D92CA2 /* GRAsyncImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GRAsyncImage;
+		};
 		5D740EC529B0BE7300975B8C /* GoodSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = GoodSwiftUI;

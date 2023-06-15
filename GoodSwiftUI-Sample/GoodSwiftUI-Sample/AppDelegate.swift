@@ -5,8 +5,7 @@
 //  Created by Andrej Jasso on 02/03/2023.
 //
 
-import UIKit
-import GoodSwiftUI
+import SwiftUI
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,20 +16,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let window = UIWindow()
         self.window = window
         window.backgroundColor = .white
-        let controller = UIViewController()
-        controller.view.backgroundColor = .green.withAlphaComponent(0.2)
-        let navigationController = UINavigationController(rootViewController: controller)
-        window.rootViewController = navigationController
+        
+        let controller = UIHostingController(rootView: SamplesListView())
+    
+        window.rootViewController = controller
         window.makeKeyAndVisible()
-
-        let pushButton = UIButton(frame: CGRect(x: 50, y: 200, width: 200, height: 50))
-        pushButton.backgroundColor = .cyan.withAlphaComponent(0.5)
-        pushButton.setTitle("Click to push", for: .normal)
-        controller.view.addSubview(pushButton)
 
         return true
     }
 
-
 }
-
