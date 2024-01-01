@@ -31,8 +31,9 @@ private struct ReadableContentWidth: ViewModifier {
 
 public extension View {
 
-    func readableContentWidth() -> some View {
-        modifier(ReadableContentWidth())
+    func readableContentWidth(_ edges: Edge.Set = .horizontal, _ length: CGFloat = 16) -> some View {
+        let modifiedView = modifier(ReadableContentWidth())
+        return modifiedView.padding(edges, length)
     }
 
 }
