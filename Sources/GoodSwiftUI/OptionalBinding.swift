@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+/// Allows binding to optional values in SwiftUI, replacing `nil` with default argument on `rhs`.
+///
+/// Example:
+/// ```swift
+///  @State private var text: String? = nil
+///  InputField(text: $text ?? "")
+/// ```
 public func ??<T>(lhs: Binding<Optional<T>>, rhs: T) -> Binding<T> {
     Binding(
         get: { lhs.wrappedValue ?? rhs },

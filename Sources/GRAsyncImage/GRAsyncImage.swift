@@ -5,6 +5,7 @@
 //  Created by Marián Franko on 25/05/2023.
 //
 
+import GoodExtensions
 import SwiftUI
 
 @available(iOS 14.0, *)
