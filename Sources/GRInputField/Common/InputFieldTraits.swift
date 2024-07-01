@@ -7,7 +7,7 @@
 
 import UIKit
 
-public struct InputFieldTraits {
+public struct InputFieldTraits: Sendable {
 
     public var textContentType: UITextContentType?
     public var autocapitalizationType: UITextAutocapitalizationType = .none

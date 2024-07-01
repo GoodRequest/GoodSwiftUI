@@ -7,13 +7,11 @@
 
 import SwiftUI
 
-final class GRImageLoader: ObservableObject {
+@MainActor final class GRImageLoader: ObservableObject {
 
     // MARK: - Properties
 
     @Published private(set) var status: Status
-
-    private var imageCache: GRImageCacheType
 
     // MARK: - Enums
 
@@ -28,10 +26,8 @@ final class GRImageLoader: ObservableObject {
 
     // MARK: - Initialization
 
-    init(url: URL?, imageCache: GRImageCacheType) {
-        self.imageCache = imageCache
-
-        if let url = url, let data = imageCache.object(forKey: url as NSURL) {
+    init(url: URL?) {
+        if let url = url, let data = GRImageCache.shared.object(forKey: url as NSURL) {
             status = .success(data)
         } else {
             status = .idle
@@ -40,14 +36,13 @@ final class GRImageLoader: ObservableObject {
 
     // MARK: - Public
 
-    @MainActor
     func load(_ url: URL?) async {
         guard let url = url else {
             status = .failure
             return
         }
 
-        if let data = imageCache.object(forKey: url as NSURL) {
+        if let data = GRImageCache.shared.object(forKey: url as NSURL) {
             status = .success(data)
             return
         }
@@ -57,7 +52,7 @@ final class GRImageLoader: ObservableObject {
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             status = .success(data)
-            imageCache.set(object: data as NSData, forKey: url as NSURL)
+            GRImageCache.shared.set(object: data, forKey: url)
         } catch {
             status = .failure
         }
