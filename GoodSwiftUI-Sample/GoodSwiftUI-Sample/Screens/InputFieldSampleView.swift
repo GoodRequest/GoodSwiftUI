@@ -41,6 +41,9 @@ struct InputFieldSampleView: View {
     @State private var name: String = ""
     @State private var password: String = ""
 
+    @State private var nameEnabled: Bool = true
+    @State private var passwordEnabled: Bool = true
+
     // MARK: - Properties
 
     // MARK: - Initialization
@@ -74,6 +77,7 @@ struct InputFieldSampleView: View {
 
                     // Focus state binding to advance focus from keyboard action button (Continue)
                     .bindFocusState($focusState, to: .name)
+                    .disabled(!nameEnabled)
 
 
 
@@ -97,6 +101,7 @@ struct InputFieldSampleView: View {
 
                     .validityGroup($validityGroup)
                     .bindFocusState($focusState, to: .pin)
+                    .disabled(!passwordEnabled)
 
                 // Input field controls
                 VStack(spacing: 16) {
@@ -140,6 +145,11 @@ struct InputFieldSampleView: View {
                             Text(String(describing: state))
                         }
                     })
+
+                    Divider()
+
+                    Toggle("Name enabled", isOn: $nameEnabled)
+                    Toggle("PIN enabled", isOn: $passwordEnabled)
                 }
                 .padding(.vertical)
             }

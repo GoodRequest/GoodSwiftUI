@@ -29,7 +29,7 @@ public extension ValidityGroup {
 
 // MARK: - Validation State
 
-public enum ValidationState {
+public enum ValidationState: Sendable {
 
     case valid
     case pending((any ValidationError)?)

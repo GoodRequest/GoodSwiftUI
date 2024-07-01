@@ -27,8 +27,8 @@ public struct InputField: UIViewRepresentable {
 
     private var traits: InputFieldTraits
     @ValidatorBuilder private var criteria: Supplier<Validator>
-    private var returnAction: VoidClosure?
-    private var resignAction: VoidClosure?
+    private var returnAction: MainClosure?
+    private var resignAction: MainClosure?
 
     // MARK: - Initialization
 
@@ -47,7 +47,7 @@ public struct InputField: UIViewRepresentable {
         self.rightButton = rightButton
         self.traits = InputFieldTraits()
 
-        @ValidatorBuilder func alwaysValidCriteria() -> Validator {
+        @ValidatorBuilder @Sendable func alwaysValidCriteria() -> Validator {
             Criterion.alwaysValid
         }
 
@@ -62,7 +62,7 @@ public struct InputField: UIViewRepresentable {
         let textFieldUUID = UUID()
 
         var cancellables = Set<AnyCancellable>()
-        var returnAction: VoidClosure?
+        var returnAction: MainClosure?
 
         public override init() {}
 
@@ -213,7 +213,7 @@ public extension InputField {
         return modifiedSelf
     }
 
-    func validationCriteria(@ValidatorBuilder _ criteria: @escaping () -> Validator) -> Self {
+    func validationCriteria(@ValidatorBuilder _ criteria: @escaping Supplier<Validator>) -> Self {
         var modifiedSelf = self
         modifiedSelf.criteria = criteria
         return modifiedSelf
@@ -265,12 +265,14 @@ private extension View {
 
     func advanceFocusIfNeeded<Focus: RawRepresentable & CaseIterable>(nextFieldIndex: Int, in focusState: FocusState<Focus?>.Binding) where Focus.RawValue == Int {
         DispatchQueue.main.asyncAfter(wallDeadline: .now() + .milliseconds(10)) {
-            if focusState.wrappedValue?.rawValue != nextFieldIndex {
-                let newValue = Focus(rawValue: nextFieldIndex + 1)
-                focusState.wrappedValue = newValue
-
-                if newValue.isNotNil {
-                    advanceFocusIfNeeded(nextFieldIndex: nextFieldIndex + 1, in: focusState)
+            MainActor.assumeIsolated {
+                if focusState.wrappedValue?.rawValue != nextFieldIndex {
+                    let newValue = Focus(rawValue: nextFieldIndex + 1)
+                    focusState.wrappedValue = newValue
+                    
+                    if newValue.isNotNil {
+                        advanceFocusIfNeeded(nextFieldIndex: nextFieldIndex + 1, in: focusState)
+                    }
                 }
             }
         }
