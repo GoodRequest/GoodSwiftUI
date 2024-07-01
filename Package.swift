@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -23,29 +23,33 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/goodrequest/goodextensions-ios", branch: "feature/goodextensions-update")
+        .package(url: "https://github.com/goodrequest/goodextensions-ios", branch: "feature/swift6")
     ],
     targets: [
         .target(
             name: "GoodSwiftUI",
-            dependencies: []
+            dependencies: [],
+            swiftSettings: [.swiftLanguageVersion(.v6)]
         ),
         .target(
             name: "GRAsyncImage",
             dependencies: [
                 .product(name: "GoodExtensions", package: "GoodExtensions-iOS"),
-            ]
+            ],
+            swiftSettings: [.swiftLanguageVersion(.v6)]
         ),
         .target(
             name: "GRInputField",
             dependencies: [
                 .product(name: "GoodExtensions", package: "GoodExtensions-iOS"),
                 .product(name: "GoodStructs", package: "GoodExtensions-iOS")
-            ]
+            ],
+            swiftSettings: [.swiftLanguageVersion(.v6)]
         ),
         .testTarget(
             name: "GoodSwiftUITests",
-            dependencies: ["GoodSwiftUI"]
+            dependencies: ["GoodSwiftUI"],
+            swiftSettings: [.swiftLanguageVersion(.v6)]
         ),
     ]
 )

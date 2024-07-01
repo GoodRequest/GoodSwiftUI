@@ -1,4 +1,5 @@
 {
+  "originHash" : "e1ab598d960ab6f121a49d6c2075b0d97871c1870344d287c4aa4b0148320b46",
   "pins" : [
     {
       "identity" : "combineext",
@@ -14,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/goodrequest/goodextensions-ios",
       "state" : {
-        "branch" : "feature/goodextensions-update",
-        "revision" : "ea9c84a268ef7dc52c884a14f26682c68959aed9"
+        "branch" : "feature/swift6",
+        "revision" : "e8b5ff6d895eea309a68177c5db8f92a611ee856"
       }
     },
     {
@@ -28,5 +29,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

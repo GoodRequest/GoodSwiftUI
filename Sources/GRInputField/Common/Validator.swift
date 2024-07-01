@@ -77,7 +77,7 @@ public struct Validator: CriteriaConvertible {
 
 // MARK: - Criterion
 
-public final class Criterion: Then, CriteriaConvertible {
+public struct Criterion: Sendable, Then, CriteriaConvertible {
 
     // MARK: - Variables
 
@@ -101,8 +101,9 @@ public final class Criterion: Then, CriteriaConvertible {
     }
 
     public func failWith(error: any ValidationError) -> Self {
-        self.error = error
-        return self
+        var mutableSelf = self
+        mutableSelf.error = error
+        return mutableSelf
     }
 
     public func asCriteria() -> [Criterion] {

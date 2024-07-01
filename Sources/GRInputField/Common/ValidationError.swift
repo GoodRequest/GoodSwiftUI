@@ -24,7 +24,7 @@ public enum InternalValidationError: ValidationError {
     public var localizedDescription: String {
         switch self {
         case .alwaysError:
-            String(describing: self)
+            "Error"
 
         case .required:
             "Required"
