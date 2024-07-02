@@ -71,3 +71,21 @@ public extension Criterion {
 
 }
 
+// MARK: - Commonly used
+
+public extension Criterion {
+
+    /// Email validator similar to RFC-5322 standards, modified for Swift compatibility, case-insensitive
+    static let email = Criterion(regex: """
+                                        (?i)\\A(?=[a-z0-9@.!#$%&'*+\\/=?^_'{|}~-]{6,254}\
+                                        \\z)(?=[a-z0-9.!#$%&'*+\\/=?^_'{|}~-]{1,64}@)\
+                                        [a-z0-9!#$%&'*+\\/=?^_'{|}~-]+(?:\\.[a-z0-9!#$%&'*+\\/=?^_'{|}~-]+)\
+                                        *@(?:(?=[a-z0-9-]{1,63}\\.)[a-z0-9]\
+                                        (?:[a-z0-9-]*[a-z0-9])?\\.)+(?=[a-z0-9-]{1,63}\\z)\
+                                        [a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z
+                                        """)
+
+    /// Accepts only valid zip codes
+    static let zipCode = Criterion(regex: #/^[0-9]{5}$/#) // Criterion(regex: "^[0-9]{5}$")
+
+}
