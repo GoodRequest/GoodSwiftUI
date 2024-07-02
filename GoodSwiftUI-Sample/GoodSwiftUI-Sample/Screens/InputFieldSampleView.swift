@@ -10,6 +10,7 @@ import GRInputField
 
 struct InputFieldSampleView: View {
 
+    // Custom validation error with error descriptions
     enum RegistrationError: ValidationError {
 
         case notFilip
@@ -27,6 +28,8 @@ struct InputFieldSampleView: View {
 
     }
 
+    // Iterable enum with Integer raw values for managing SwiftUI focus state
+    // and specifying the ordering of input fields
     enum LoginFields: Int, CaseIterable, Equatable, Hashable {
         case name, pin
     }
@@ -40,6 +43,10 @@ struct InputFieldSampleView: View {
 
     @State private var name: String = ""
     @State private var password: String = ""
+    @State private var percent: Double = 0.5
+
+    @State private var nameEnabled: Bool = true
+    @State private var passwordEnabled: Bool = true
 
     // MARK: - Properties
 
@@ -52,100 +59,177 @@ struct InputFieldSampleView: View {
 
     // MARK: - Computed properties
 
-    // MARK: - Body
+    // MARK: - Example
 
     var body: some View {
         ScrollView {
             VStack {
-                // Text field
-                InputField(text: $name, title: "Name", placeholder: "Jožko")
-
-                    // "Continue" keyboard action button
-                    .inputFieldTraits(returnKeyType: .continue)
-
-                    // Validates name to be equal to "Filip", otherwise fails with custom error
-                    .validationCriteria {
-                        Criterion.matches("Filip")
-                            .failWith(error: RegistrationError.notFilip)
-                    }
-
-                    // Validity group to check for validity
-                    .validityGroup($validityGroup)
-
-                    // Focus state binding to advance focus from keyboard action button (Continue)
-                    .bindFocusState($focusState, to: .name)
-
-
-
-                // Text field
-                InputField(text: $password, title: "PIN code", hint: "At least 6 numbers")
-
-                    // Multiple custom traits
-                    .inputFieldTraits(
-                        keyboardType: .numberPad,
-                        numpadReturnKeyTitle: "Done",
-                        isSecureTextEntry: true
-                    )
-
-                    // Custom validation criteria closure
-                    .validationCriteria {
-                        Criterion { password in
-                            password?.count ?? 0 >= 6
-                        }
-                        .failWith(error: RegistrationError.pinTooShort)
-                    }
-
-                    .validityGroup($validityGroup)
-                    .bindFocusState($focusState, to: .pin)
+                nameInputField
+                pinCodeInputField
+                formattedInputField
 
                 // Input field controls
                 VStack(spacing: 16) {
-
-                    // Checking validity state on fields
-                    // Doesn't reflect state visible to the user, but the actual validity of data
-                    if validityGroup.allValid() {
-                        Text("Internal validation state: ") + Text("valid").foregroundColor(.green)
-                    } else {
-                        Text("Internal validation state: ") + Text("invalid").foregroundColor(.red)
-                    }
-
-                    // Invoking validation of the whole validity group
-                    // State visible to the user is changed to reflect validity of data
-                    Button("Force validation on all fields") {
-                        validityGroup.validateAll()
-                    }
-
-                    // State visible to the user is reset to default and
-                    // all data is revalidated in the background.
-                    Button("Remove validation metadata") {
-                        validityGroup.removeAll()
-                    }
+                    validityGroups
 
                     Divider()
 
-                    Text("Internal metadata:")
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    metadata
 
-                    LazyVGrid(columns: [GridItem(.fixed(100)), GridItem()], content: {
-                        Text("Focus state")
-                        Text(String(describing: focusState))
+                    Divider()
 
-                        ForEach(Array(validityGroup), id: \.key) { id, state in
-                            let uuidString = id.uuidString
-                            let startIndex = uuidString.startIndex
-                            let endIndex = uuidString.index(startIndex, offsetBy: 6)
-
-                            Text(String(uuidString[startIndex...endIndex]))
-
-                            Text(String(describing: state))
-                        }
-                    })
+                    disableToggles
                 }
+                .padding()
+                .background { Color(uiColor: UIColor.secondarySystemBackground) }
+                .clipShape(.rect(cornerRadius: 12))
                 .padding(.vertical)
             }
             .padding()
         }
         .scrollDismissesKeyboard(.interactively)
+    }
+
+}
+
+// MARK: - Examples
+
+extension InputFieldSampleView {
+
+    private var nameInputField: some View {
+        // Text field
+        InputField(text: $name, title: "Name", placeholder: "Jožko")
+
+        // "Continue" keyboard action button
+            .inputFieldTraits(returnKeyType: .continue)
+
+        // Validates name to be equal to "Filip", otherwise fails with custom error
+            .validationCriteria {
+                Criterion.matches("Filip")
+                    .failWith(error: RegistrationError.notFilip)
+            }
+
+        // Validity group to check for validity
+            .validityGroup($validityGroup)
+
+        // Focus state binding to advance focus from keyboard action button (Continue)
+            .bindFocusState($focusState, to: .name)
+            .disabled(!nameEnabled)
+    }
+
+    private var pinCodeInputField: some View {
+        // Text field
+        InputField(text: $password, title: "PIN code", hint: "At least 6 numbers")
+
+        // Multiple custom traits
+            .inputFieldTraits(
+                keyboardType: .numberPad,
+                numpadReturnKeyTitle: "Done",
+                isSecureTextEntry: true
+            )
+
+        // Custom validation criteria closure
+            .validationCriteria {
+                Criterion { password in
+                    password?.count ?? 0 >= 6
+                }
+                .failWith(error: RegistrationError.pinTooShort)
+            }
+
+            .validityGroup($validityGroup)
+            .bindFocusState($focusState, to: .pin)
+            .disabled(!passwordEnabled)
+    }
+
+    private var percentFormattedInputField: some View {
+        // Text field with custom formatter
+        InputField(
+            value: $percent,
+            format: .percent.precision(.fractionLength(0..<2)),
+            title: "Percent (%)",
+            placeholder: "0 %"
+        )
+        .inputFieldTraits(keyboardType: .numbersAndPunctuation)
+    }
+
+    private var validityGroups: some View {
+        Group {
+            // Checking validity state on fields
+            // Doesn't reflect state visible to the user, but the actual validity of data
+            if validityGroup.allValid() {
+                Text("Internal validation state: ") + Text("valid").foregroundColor(.green)
+            } else {
+                Text("Internal validation state: ") + Text("invalid").foregroundColor(.red)
+            }
+
+            // Invoking validation of the whole validity group
+            // State visible to the user is changed to reflect validity of data
+            Button("Force validation on all fields") {
+                validityGroup.validateAll()
+            }
+
+            // State visible to the user is reset to default and
+            // all data is revalidated in the background.
+            Button("Remove validation metadata") {
+                validityGroup.removeAll()
+            }
+        }
+    }
+
+}
+
+// MARK: - Internal
+
+extension InputFieldSampleView {
+
+    private var metadata: some View {
+        Group {
+            Text("Internal metadata:")
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            LazyVGrid(columns: [GridItem(.fixed(100)), GridItem()], content: {
+                Text("Focus state")
+                Text(String(describing: focusState))
+
+                ForEach(Array(validityGroup), id: \.key) { id, state in
+                    let uuidString = id.uuidString
+                    let startIndex = uuidString.startIndex
+                    let endIndex = uuidString.index(startIndex, offsetBy: 6)
+
+                    Text(String(uuidString[startIndex...endIndex]))
+
+                    Text(String(describing: state))
+                }
+            })
+        }
+    }
+
+    private var disableToggles: some View {
+        Group {
+            Toggle("Name enabled", isOn: $nameEnabled)
+            Toggle("PIN enabled", isOn: $passwordEnabled)
+        }
+    }
+
+    private var formattedInputField: some View {
+        Group {
+            percentFormattedInputField
+
+            Text("Native input field + percent format style")
+                .font(.caption2)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            TextField(
+                value: $percent,
+                format: .percent.precision(.fractionLength(0..<2)),
+                label: { Text("Percent (%)") }
+            )
+            .keyboardType(.numbersAndPunctuation)
+
+            Text("Current value slider (0 - 1)")
+                .font(.caption2)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Slider(value: $percent)
+        }
     }
 
 }

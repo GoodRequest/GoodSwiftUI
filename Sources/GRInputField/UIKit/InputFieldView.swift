@@ -541,11 +541,6 @@ public extension InputFieldView {
         state = .disabled
     }
 
-    @available(*, deprecated, message: "Assign to `text` instead.")
-    func setText(_ text: String) {
-        self.text = text
-    }
-
     func beginEditing() {
         textField.becomeFirstResponder()
     }
@@ -556,6 +551,20 @@ public extension InputFieldView {
 
     func attachTextFieldDelegate(_ delegate: any UITextFieldDelegate) {
         textField.delegate = delegate
+    }
+
+}
+
+// MARK: - Internal
+
+internal extension InputFieldView {
+
+    /// Update text in internal textfield when data changes and textfield is currently not being edited
+    func updateText(_ text: String) {
+        guard state != .selected else {
+            return
+        }
+        textField.text = text
     }
 
 }

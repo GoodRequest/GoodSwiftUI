@@ -44,7 +44,7 @@ public final class ValidableInputFieldView: InputFieldView {
     func validate() -> Bool {
         guard let validator = validator?() else { fatalError("Validator not set") }
 
-        if let error = validator.validate(input: self.text) as? any ValidationError {
+        if let error = validator.validate(input: self.text) {
             fail(with: error.localizedDescription)
             afterValidation?(error)
             return false
@@ -58,7 +58,7 @@ public final class ValidableInputFieldView: InputFieldView {
     func validateSilently() -> (any ValidationError)? {
         guard let validator = validator?() else { return InternalValidationError.alwaysError }
 
-        return validator.validate(input: self.text) as? any ValidationError
+        return validator.validate(input: self.text)
     }
 
     // MARK: - Private
@@ -66,7 +66,6 @@ public final class ValidableInputFieldView: InputFieldView {
     private func setupValidators() {
         resignPublisher
             .map { [weak self] _ in self?.validator?().validate(input: self?.text) }
-            .map { $0 as? any ValidationError }
             .sink { [weak self] error in
                 if let error { self?.fail(with: error.localizedDescription) }
                 self?.afterValidation?(error) // If wrapped in UIViewRepresentable, update SwiftUI state here

@@ -25,6 +25,8 @@ public struct InputField: UIViewRepresentable {
     public let hint: String?
     public let rightButton: Supplier<UIButton>?
 
+    private var hasFormatting: Bool = false
+
     private var traits: InputFieldTraits
     @ValidatorBuilder private var criteria: Supplier<Validator>
     private var returnAction: VoidClosure?
@@ -53,6 +55,31 @@ public struct InputField: UIViewRepresentable {
 
         // closures cannot take @ValidationBuilder attribute, must be a function reference
         self.criteria = alwaysValidCriteria
+    }
+
+    @available(iOS 15.0, *)
+    public init<FormattedType, FormatterType: ParseableFormatStyle>(
+        value: Binding<FormattedType>,
+        format: FormatterType,
+        title: String? = nil,
+        placeholder: String? = nil,
+        hint: String? = " ",
+        rightButton: Supplier<UIButton>? = nil
+    ) where FormatterType.FormatInput == FormattedType , FormatterType.FormatOutput == String {
+        let formattedBinding = Binding(get: {
+            let formattedString = format.format(value.wrappedValue)
+            return formattedString
+        }, set: { newString in
+            do {
+                let parsedValue = try format.parseStrategy.parse(newString)
+                value.wrappedValue = parsedValue
+            } catch {
+                // skip assigning invalid value
+            }
+        })
+
+        self.init(text: formattedBinding, title: title, placeholder: placeholder, hint: hint, rightButton: rightButton)
+        self.hasFormatting = true
     }
 
     // MARK: - Coordinator
@@ -113,13 +140,18 @@ public struct InputField: UIViewRepresentable {
 
         let editingChangedCancellable = view.editingChangedPublisher
             .removeDuplicates()
-            .sink { newText in Task { @MainActor in
+            .receive(on: DispatchQueue.main)
+            .sink { newText in
                 self.text = newText
                 invalidateValidityState(in: context)
-            }}
+            }
 
         let resignCancellable = view.resignPublisher
-            .sink { _ in resignAction?() }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak view] _ in
+                applyFormatting(view: view)
+                resignAction?()
+            }
 
         context.coordinator.cancellables.insert(editingChangedCancellable)
         context.coordinator.cancellables.insert(resignCancellable)
@@ -128,8 +160,12 @@ public struct InputField: UIViewRepresentable {
     }
     
     public func updateUIView(_ uiView: ValidableInputFieldView, context: Context) {
-        uiView.text = self.text
-        uiView.isEnabled = context.environment.isEnabled
+        uiView.updateText(self.text)
+
+        // Equality check to prevent unintended side effects
+        if uiView.isEnabled != context.environment.isEnabled {
+            uiView.isEnabled = context.environment.isEnabled
+        }
 
         updateValidityState(uiView: uiView, context: context)
     }
@@ -182,6 +218,14 @@ public struct InputField: UIViewRepresentable {
     private func invalidateValidityState(in context: Context) {
         Task { @MainActor in
             validityGroup.removeValue(forKey: context.coordinator.textFieldUUID)
+        }
+    }
+
+    // MARK: - Formatting
+
+    func applyFormatting(view uiView: ValidableInputFieldView?) {
+        if hasFormatting {
+            uiView?.text = self.text
         }
     }
 

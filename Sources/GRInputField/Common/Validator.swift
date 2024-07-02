@@ -56,7 +56,7 @@ public struct Validator: CriteriaConvertible {
         validate(input: input).isNil
     }
 
-    public func validate(input: String?) -> Error? {
+    public func validate(input: String?) -> (any ValidationError)? {
         let failure = criteria
             .map { (criterion: $0, result: $0.validate(input: input)) }
             .first { _, result in !result }
