@@ -40,8 +40,14 @@ public final class ValidableInputFieldView: InputFieldView {
         self.afterValidation = action
     }
 
+    /// Requests validation of this text fields' content. Text field will automatically update the appearance to
+    /// valid/invalid state, depending on the result of validation.
+    ///
+    /// If no validator is set, this function will crash. Please make sure to set validation criteria before
+    /// requesting validation.
+    /// - Returns: `true` when content is valid, `false` otherwise
     @discardableResult
-    func validate() -> Bool {
+    public func validate() -> Bool {
         guard let validator = validator?() else { fatalError("Validator not set") }
 
         if let error = validator.validate(input: self.text) {
@@ -55,7 +61,11 @@ public final class ValidableInputFieldView: InputFieldView {
         }
     }
 
-    func validateSilently() -> (any ValidationError)? {
+    /// Validates the content and returns an appropriate error.
+    ///
+    /// Does not update the UI in any way.
+    /// - Returns: `nil` when content is valid, otherwise validation error from failed criterion.
+    public func validateSilently() -> (any ValidationError)? {
         guard let validator = validator?() else { return InternalValidationError.alwaysError }
 
         return validator.validate(input: self.text)
