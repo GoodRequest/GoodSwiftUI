@@ -146,15 +146,21 @@ public struct InputField: UIViewRepresentable {
                 invalidateValidityState(in: context)
             }
 
-        let resignCancellable = view.resignPublisher
+        let willResignCancellable = view.willResignPublisher
+            .sink { [weak view] text in
+                guard let view else { return }
+                applyFormatting(in: view)
+            }
+
+        let didResignCancellable = view.didResignPublisher
             .receive(on: DispatchQueue.main)
-            .sink { [weak view] _ in
-                applyFormatting(view: view)
+            .sink { _ in
                 resignAction?()
             }
 
         context.coordinator.cancellables.insert(editingChangedCancellable)
-        context.coordinator.cancellables.insert(resignCancellable)
+        context.coordinator.cancellables.insert(willResignCancellable)
+        context.coordinator.cancellables.insert(didResignCancellable)
 
         return view
     }
@@ -223,9 +229,9 @@ public struct InputField: UIViewRepresentable {
 
     // MARK: - Formatting
 
-    func applyFormatting(view uiView: ValidableInputFieldView?) {
+    func applyFormatting(in uiView: ValidableInputFieldView) {
         if hasFormatting {
-            uiView?.text = self.text
+            uiView.updateText(self.text)
         }
     }
 

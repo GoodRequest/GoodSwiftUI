@@ -244,40 +244,100 @@ extension InputFieldSampleView {
 
 @available(iOS 17.0, *)
 #Preview {
-    let _: () = InputFieldView.configureAppearance()
+    InputFieldSampleViewController()
+}
 
-    let inputField = InputFieldView(frame: CGRect(x: 0, y: 100, width: 250, height: 56))
-    inputField.setup(with: .init(
-        title: "Title",
-        text: .placeholder(length: 20),
-        leftImage: nil,
-        rightButton: nil,
-        placeholder: "Placeholder",
-        hint: " ",
-        traits: .default
-    ))
 
-    let validableInputField = ValidableInputFieldView(frame: CGRect(x: 0, y: 100, width: 250, height: 56))
-    validableInputField.setup(with: .init(
-        title: "Title",
-        text: .placeholder(length: 8),
-        leftImage: nil,
-        rightButton: nil,
-        placeholder: "Placeholder",
-        hint: " ",
-        traits: .init(isSecureTextEntry: true)
-    ))
+private final class InputFieldSampleViewController: UIViewController {
 
-    inputField.setNextResponder(validableInputField)
-    validableInputField.setValidationCriteria { Criterion.nonEmpty }
-    validableInputField.setPostValidationAction { result in print("Hello validation - \(result)") }
+    enum PercentError: ValidationError {
+        case tooSmall
+        case notPercent
 
-    let stackView = UIStackView(arrangedSubviews: [
-        inputField, validableInputField
-    ])
+        var localizedDescription: String {
+            switch self {
+            case .tooSmall:
+                "Too small"
+            case .notPercent:
+                "Not a percent value"
+            }
+        }
+    }
 
-    stackView.axis = .vertical
-    stackView.widthAnchor.constraint(equalToConstant: 300).isActive = true
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
-    return stackView
+        let _: () = InputFieldView.configureAppearance()
+
+        let inputField = InputFieldView(frame: CGRect(x: 0, y: 100, width: 250, height: 56))
+        inputField.setup(with: .init(
+            title: "Title",
+            text: .placeholder(length: 20),
+            leftImage: nil,
+            rightButton: nil,
+            placeholder: "Placeholder",
+            hint: " ",
+            traits: .default
+        ))
+
+        let validableInputField = ValidableInputFieldView(frame: CGRect(x: 0, y: 100, width: 250, height: 56))
+        validableInputField.setup(with: .init(
+            title: "Title",
+            text: .placeholder(length: 8),
+            leftImage: nil,
+            rightButton: nil,
+            placeholder: "Placeholder",
+            hint: " ",
+            traits: .init(isSecureTextEntry: true)
+        ))
+
+        let formattableInputField = FormattableValidableInputFieldView<Double, FloatingPointFormatStyle.Percent>(
+            formatter: .percent.precision(.fractionLength(0..<2)),
+            frame: CGRect(x: 0, y: 100, width: 250, height: 56)
+        )
+        formattableInputField.setup(with: .init(
+            title: "Title",
+            text: "0 %",
+            leftImage: nil,
+            rightButton: nil,
+            placeholder: "Placeholder",
+            hint: " ",
+            traits: .init(keyboardType: .numberPad)
+        ))
+
+        inputField.setNextResponder(validableInputField)
+        validableInputField.setNextResponder(formattableInputField)
+
+        validableInputField.setValidationCriteria { Criterion.nonEmpty }
+        validableInputField.setPostValidationAction { result in print("Hello validation - \(String(describing: result))") }
+
+        formattableInputField.setValidationCriteria {
+            Criterion(predicate: { text in
+                text?.last == "%"
+            })
+            .failWith(error: PercentError.notPercent)
+
+            Criterion(predicate: { [weak formattableInputField] _ in
+                guard let value = formattableInputField?.value else { return false }
+                return value > 0.5
+            })
+            .failWith(error: PercentError.tooSmall)
+        }
+
+        let stackView = UIStackView(arrangedSubviews: [
+            inputField, validableInputField, formattableInputField, UIView()
+        ])
+
+        stackView.axis = .vertical
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(stackView)
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+    }
+
 }

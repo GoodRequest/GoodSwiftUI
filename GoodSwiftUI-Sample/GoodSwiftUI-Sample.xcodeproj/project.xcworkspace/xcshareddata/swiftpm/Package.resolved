@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/goodrequest/goodextensions-ios",
       "state" : {
-        "branch" : "main",
-        "revision" : "0db99c0d3b49828a7d6189786215f3abfeb4de6f"
+        "revision" : "0db99c0d3b49828a7d6189786215f3abfeb4de6f",
+        "version" : "1.6.0"
       }
     },
     {

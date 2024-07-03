@@ -138,8 +138,14 @@ public class InputFieldView: UIView {
 
     internal var cancellables = Set<AnyCancellable>()
 
-    private let resignSubject = PassthroughSubject<String, Never>()
-    private(set) public lazy var resignPublisher = resignSubject.eraseToAnyPublisher()
+    private let willResignSubject = PassthroughSubject<String, Never>()
+    private(set) public lazy var willResignPublisher = willResignSubject.eraseToAnyPublisher()
+
+    private let didResignSubject = PassthroughSubject<String, Never>()
+    private(set) public lazy var didResignPublisher = didResignSubject.eraseToAnyPublisher()
+
+//    @available(*, deprecated, renamed: "didResignPublisher")
+    public var resignPublisher: AnyPublisher<String, Never> { didResignPublisher.eraseToAnyPublisher() }
 
     private let returnSubject = PassthroughSubject<String, Never>()
     private(set) public lazy var returnPublisher = returnSubject.eraseToAnyPublisher()
@@ -156,7 +162,9 @@ public class InputFieldView: UIView {
     }
 
     public required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
+
+        setupLayout()
     }
 
 }
@@ -423,8 +431,12 @@ private extension InputFieldView {
         state = .enabled
         setSecureTextEntryIfAllowed(isSecure: true)
         trimWhitespaceIfAllowed()
-        editingChangedSubject.send(text)
-        resignSubject.send(text)
+
+        // due to synchronous nature of publishers when executing on the same thread
+        // willResignSubject is expected to modify the state before resigning
+        willResignSubject.send(text)
+
+        didResignSubject.send(text)
     }
 
     @objc func `return`() {
