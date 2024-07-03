@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		09794E3A2C295F4600023CD1 /* InputFieldViewConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09794E392C295F4600023CD1 /* InputFieldViewConfiguration.swift */; };
+		09794E3C2C2ADAFE00023CD1 /* InputFieldSampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09794E3B2C2ADAFE00023CD1 /* InputFieldSampleView.swift */; };
 		3F9F28442A3AEC6000D92CA2 /* SamplesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9F28432A3AEC6000D92CA2 /* SamplesListView.swift */; };
 		3F9F28462A3AEC8B00D92CA2 /* GRAsyncImageSampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9F28452A3AEC8B00D92CA2 /* GRAsyncImageSampleView.swift */; };
 		3F9F28482A3AECC700D92CA2 /* GRAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 3F9F28472A3AECC700D92CA2 /* GRAsyncImage */; };
@@ -17,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		09794E392C295F4600023CD1 /* InputFieldViewConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputFieldViewConfiguration.swift; sourceTree = "<group>"; };
+		09794E3B2C2ADAFE00023CD1 /* InputFieldSampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputFieldSampleView.swift; sourceTree = "<group>"; };
 		3F9F28432A3AEC6000D92CA2 /* SamplesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplesListView.swift; sourceTree = "<group>"; };
 		3F9F28452A3AEC8B00D92CA2 /* GRAsyncImageSampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GRAsyncImageSampleView.swift; sourceTree = "<group>"; };
 		5D740EA929B0BE0100975B8C /* GoodSwiftUI-Sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GoodSwiftUI-Sample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -40,11 +44,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		09794E382C295F3F00023CD1 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				09794E392C295F4600023CD1 /* InputFieldViewConfiguration.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		3F9F28422A3AEC5200D92CA2 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
 				3F9F28432A3AEC6000D92CA2 /* SamplesListView.swift */,
 				3F9F28452A3AEC8B00D92CA2 /* GRAsyncImageSampleView.swift */,
+				09794E3B2C2ADAFE00023CD1 /* InputFieldSampleView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -70,6 +83,7 @@
 		5D740EAB29B0BE0100975B8C /* GoodSwiftUI-Sample */ = {
 			isa = PBXGroup;
 			children = (
+				09794E382C295F3F00023CD1 /* Extensions */,
 				3F9F28422A3AEC5200D92CA2 /* Screens */,
 				5D740EAC29B0BE0100975B8C /* AppDelegate.swift */,
 				5D740EB729B0BE0200975B8C /* Assets.xcassets */,
@@ -169,8 +183,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D740EAD29B0BE0100975B8C /* AppDelegate.swift in Sources */,
+				09794E3A2C295F4600023CD1 /* InputFieldViewConfiguration.swift in Sources */,
 				3F9F28462A3AEC8B00D92CA2 /* GRAsyncImageSampleView.swift in Sources */,
 				3F9F28442A3AEC6000D92CA2 /* SamplesListView.swift in Sources */,
+				09794E3C2C2ADAFE00023CD1 /* InputFieldSampleView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

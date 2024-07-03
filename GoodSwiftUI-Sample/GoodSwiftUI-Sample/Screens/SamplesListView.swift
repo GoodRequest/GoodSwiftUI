@@ -14,20 +14,29 @@ enum Sample: CaseIterable, Identifiable, Hashable {
     var id: String { UUID().uuidString }
     
     case grAsyncImage
-    
+    case inputFields
+
     var title: String {
         switch self {
         case .grAsyncImage:
-            return "Async Image"
+            "Async Image"
+
+        case .inputFields:
+            "Input fields"
         }
     }
     
     var view: some View {
-        switch self {
-        case .grAsyncImage:
-            return GRAsyncImageSampleView()
-                .navigationTitle(self.title)
+        Group {
+            switch self {
+            case .grAsyncImage:
+                GRAsyncImageSampleView()
+
+            case .inputFields:
+                InputFieldSampleView()
+            }
         }
+        .navigationTitle(self.title)
     }
     
 }
@@ -48,4 +57,8 @@ struct SamplesListView: View {
         }
     }
     
+}
+
+#Preview {
+    SamplesListView()
 }
