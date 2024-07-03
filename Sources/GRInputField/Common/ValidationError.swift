@@ -86,6 +86,6 @@ public extension Criterion {
                                         """)
 
     /// Accepts only valid zip codes
-    static let zipCode = Criterion(regex: #/^[0-9]{5}$/#) // Criterion(regex: "^[0-9]{5}$")
+    static let zipCode = Criterion(regex: "^[0-9]{5}$")
 
 }
