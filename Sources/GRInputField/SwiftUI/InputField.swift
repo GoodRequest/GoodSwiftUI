@@ -65,7 +65,7 @@ public struct InputField: UIViewRepresentable {
         placeholder: String? = nil,
         hint: String? = " ",
         rightButton: Supplier<UIButton>? = nil
-    ) where FormatterType.FormatInput == FormattedType , FormatterType.FormatOutput == String {
+    ) where FormatterType.FormatInput == FormattedType, FormatterType.FormatOutput == String {
         let formattedBinding = Binding(get: {
             let formattedString = format.format(value.wrappedValue)
             return formattedString
@@ -144,12 +144,20 @@ public struct InputField: UIViewRepresentable {
             .sink { newText in
                 self.text = newText
                 invalidateValidityState(in: context)
+
+                if hasFormatting {
+                    applyFormatting()
+                }
             }
 
         let willResignCancellable = view.willResignPublisher
             .sink { [weak view] text in
                 guard let view else { return }
-                applyFormatting(in: view)
+
+                if hasFormatting {
+                    applyFormatting()
+                    view.updateText(self.text)
+                }
             }
 
         let didResignCancellable = view.didResignPublisher
@@ -166,7 +174,7 @@ public struct InputField: UIViewRepresentable {
     }
     
     public func updateUIView(_ uiView: ValidableInputFieldView, context: Context) {
-        uiView.updateText(self.text)
+        uiView.updateText(self.text, force: true)
 
         // Equality check to prevent unintended side effects
         if uiView.isEnabled != context.environment.isEnabled {
@@ -229,10 +237,12 @@ public struct InputField: UIViewRepresentable {
 
     // MARK: - Formatting
 
-    func applyFormatting(in uiView: ValidableInputFieldView) {
-        if hasFormatting {
-            uiView.updateText(self.text)
-        }
+    func applyFormatting() {
+        // (get)self.text = get value from storage (not formatted) and format it (in Binding.get)
+        let formatted = self.text
+
+        // (set)self.text = store formatted value back to storage
+        self.text = formatted
     }
 
 }

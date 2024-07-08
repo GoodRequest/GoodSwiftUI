@@ -571,9 +571,13 @@ public extension InputFieldView {
 
 internal extension InputFieldView {
 
-    /// Update text in internal textfield when data changes and textfield is currently not being edited
-    func updateText(_ text: String) {
-        guard state != .selected else {
+    /// Updates text in internal textfield without notifying Combine event subscribers. Checks if textfield
+    /// is currently not being edited (textfield state is not `selected`) before changing the value.
+    /// - Parameters:
+    ///   - text: New text to set.
+    ///   - force: When force is set to `true`, skips checking if textfield is being edited and always changes the value.
+    func updateText(_ text: String, force: Bool = false) {
+        guard state != .selected || force else {
             return
         }
         textField.text = text
