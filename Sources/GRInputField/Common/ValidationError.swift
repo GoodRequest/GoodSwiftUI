@@ -45,18 +45,18 @@ public enum InternalValidationError: ValidationError {
 public extension Criterion {
 
     /// Always succeeds
-    static let alwaysValid = Criterion { _ in true }
+    nonisolated static let alwaysValid = Criterion { _ in true }
 
     /// Always fails
-    static let alwaysError = Criterion { _ in false }
+    nonisolated static let alwaysError = Criterion { _ in false }
         .failWith(error: InternalValidationError.alwaysError)
 
     /// Accepts any input with length > 0, excluding leading/trailing whitespace
-    static let nonEmpty = Criterion { !($0 ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+    nonisolated static let nonEmpty = Criterion { !($0 ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
         .failWith(error: InternalValidationError.required)
 
     /// Accepts an input if it is equal with another input
-    static func matches(_ other: String?) -> Criterion {
+    nonisolated static func matches(_ other: String?) -> Criterion {
         Criterion { this in this == other }
             .failWith(error: InternalValidationError.mismatch)
     }
@@ -68,12 +68,12 @@ public extension Criterion {
     ///
     /// If input is empty, validation **succeeds** and input is deemed valid.
     /// If input is non-empty, validation continues by criterion specified as a parameter.
-    static func acceptEmpty(_ criterion: Criterion) -> Criterion {
+    nonisolated static func acceptEmpty(_ criterion: Criterion) -> Criterion {
         Criterion { Criterion.nonEmpty.validate(input: $0) ? criterion.validate(input: $0) : true }
             .failWith(error: criterion.error)
     }
 
-    static func external(error: (any Error)?) -> Criterion {
+    nonisolated static func external(error: (any Error)?) -> Criterion {
         Criterion { _ in error == nil }.failWith(error: InternalValidationError.external(error?.localizedDescription ?? ""))
     }
 

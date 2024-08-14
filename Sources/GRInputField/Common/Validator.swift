@@ -48,15 +48,15 @@ import GoodStructs
 
 // MARK: - Validator
 
-@MainActor public struct Validator: CriteriaConvertible {
+public struct Validator: CriteriaConvertible {
 
     fileprivate var criteria: [Criterion] = []
 
-    public func isValid(input: String?) -> Bool {
+    @MainActor public func isValid(input: String?) -> Bool {
         validate(input: input).isNil
     }
 
-    public func validate(input: String?) -> (any ValidationError)? {
+    @MainActor public func validate(input: String?) -> (any ValidationError)? {
         let failure = criteria
             .map { (criterion: $0, result: $0.validate(input: input)) }
             .first { _, result in !result }
@@ -77,7 +77,7 @@ import GoodStructs
 
 // MARK: - Criterion
 
-@MainActor public struct Criterion: Sendable, Then, CriteriaConvertible {
+public struct Criterion: Sendable, Then, CriteriaConvertible {
 
     // MARK: - Variables
 
@@ -139,7 +139,7 @@ extension Criterion: Hashable {
 
 extension Criterion {
 
-    public func validate(input: String?) -> Bool {
+    @MainActor public func validate(input: String?) -> Bool {
         if regex != nil {
             guard let input = input else { return false }
 
