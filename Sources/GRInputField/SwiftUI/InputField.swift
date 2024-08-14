@@ -65,7 +65,7 @@ public struct InputField: UIViewRepresentable {
         placeholder: String? = nil,
         hint: String? = " ",
         rightButton: Supplier<UIButton>? = nil
-    ) where FormatterType.FormatInput == FormattedType , FormatterType.FormatOutput == String {
+    ) where FormatterType.FormatInput == FormattedType, FormatterType.FormatOutput == String {
         let formattedBinding = Binding(get: {
             let formattedString = format.format(value.wrappedValue)
             return formattedString
@@ -144,23 +144,37 @@ public struct InputField: UIViewRepresentable {
             .sink { newText in
                 self.text = newText
                 invalidateValidityState(in: context)
+
+                if hasFormatting {
+                    applyFormatting()
+                }
             }
 
-        let resignCancellable = view.resignPublisher
+        let willResignCancellable = view.willResignPublisher
+            .sink { [weak view] text in
+                guard let view else { return }
+
+                if hasFormatting {
+                    applyFormatting()
+                    view.updateText(self.text)
+                }
+            }
+
+        let didResignCancellable = view.didResignPublisher
             .receive(on: DispatchQueue.main)
-            .sink { [weak view] _ in
-                applyFormatting(view: view)
+            .sink { _ in
                 resignAction?()
             }
 
         context.coordinator.cancellables.insert(editingChangedCancellable)
-        context.coordinator.cancellables.insert(resignCancellable)
+        context.coordinator.cancellables.insert(willResignCancellable)
+        context.coordinator.cancellables.insert(didResignCancellable)
 
         return view
     }
     
     public func updateUIView(_ uiView: ValidableInputFieldView, context: Context) {
-        uiView.updateText(self.text)
+        uiView.updateText(self.text, force: true)
 
         // Equality check to prevent unintended side effects
         if uiView.isEnabled != context.environment.isEnabled {
@@ -223,10 +237,12 @@ public struct InputField: UIViewRepresentable {
 
     // MARK: - Formatting
 
-    func applyFormatting(view uiView: ValidableInputFieldView?) {
-        if hasFormatting {
-            uiView?.text = self.text
-        }
+    func applyFormatting() {
+        // (get)self.text = get value from storage (not formatted) and format it (in Binding.get)
+        let formatted = self.text
+
+        // (set)self.text = store formatted value back to storage
+        self.text = formatted
     }
 
 }

@@ -18,6 +18,7 @@ public struct GRAsyncImage<FailurePlaceholder: View, LoadingPlaceholder: View>: 
     var url: URL?
     var failurePlaceholder: FailurePlaceholder
     var loadingPlaceholder: LoadingPlaceholder
+    var allowsReloading: Bool
     var onLoading: VoidClosure?
     var onSuccess: VoidClosure?
     var onFailure: VoidClosure?
@@ -28,6 +29,7 @@ public struct GRAsyncImage<FailurePlaceholder: View, LoadingPlaceholder: View>: 
         url: URL?,
         @ViewBuilder failurePlaceholder: () -> FailurePlaceholder = { Image(systemName: "arrow.clockwise") },
         @ViewBuilder loadingPlaceholder: () -> LoadingPlaceholder = { ProgressView().progressViewStyle(.circular) },
+        allowsReloading: Bool = true,
         onLoading: VoidClosure? = nil,
         onSuccess: VoidClosure? = nil,
         onFailure: VoidClosure? = nil
@@ -37,6 +39,7 @@ public struct GRAsyncImage<FailurePlaceholder: View, LoadingPlaceholder: View>: 
         self.url = url
         self.failurePlaceholder = failurePlaceholder()
         self.loadingPlaceholder = loadingPlaceholder()
+        self.allowsReloading = allowsReloading
         self.onLoading = onLoading
         self.onSuccess = onSuccess
         self.onFailure = onFailure
@@ -59,7 +62,11 @@ public struct GRAsyncImage<FailurePlaceholder: View, LoadingPlaceholder: View>: 
                 }
 
             case .failure:
-                Button(action: { startLoadingImage(url: url) }, label: { failurePlaceholder })
+                if allowsReloading {
+                    Button(action: { startLoadingImage(url: url) }, label: { failurePlaceholder })
+                } else {
+                    failurePlaceholder
+                }
 
             case .idle:
                 Color.clear

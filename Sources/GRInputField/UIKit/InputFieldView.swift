@@ -138,8 +138,14 @@ public class InputFieldView: UIView {
 
     internal var cancellables = Set<AnyCancellable>()
 
-    private let resignSubject = PassthroughSubject<String, Never>()
-    private(set) public lazy var resignPublisher = resignSubject.eraseToAnyPublisher()
+    private let willResignSubject = PassthroughSubject<String, Never>()
+    private(set) public lazy var willResignPublisher = willResignSubject.eraseToAnyPublisher()
+
+    private let didResignSubject = PassthroughSubject<String, Never>()
+    private(set) public lazy var didResignPublisher = didResignSubject.eraseToAnyPublisher()
+
+//    @available(*, deprecated, renamed: "didResignPublisher")
+    public var resignPublisher: AnyPublisher<String, Never> { didResignPublisher.eraseToAnyPublisher() }
 
     private let returnSubject = PassthroughSubject<String, Never>()
     private(set) public lazy var returnPublisher = returnSubject.eraseToAnyPublisher()
@@ -156,7 +162,9 @@ public class InputFieldView: UIView {
     }
 
     public required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
+
+        setupLayout()
     }
 
 }
@@ -423,8 +431,12 @@ private extension InputFieldView {
         state = .enabled
         setSecureTextEntryIfAllowed(isSecure: true)
         trimWhitespaceIfAllowed()
-        editingChangedSubject.send(text)
-        resignSubject.send(text)
+
+        // due to synchronous nature of publishers when executing on the same thread
+        // willResignSubject is expected to modify the state before resigning
+        willResignSubject.send(text)
+
+        didResignSubject.send(text)
     }
 
     @objc func `return`() {
@@ -559,9 +571,13 @@ public extension InputFieldView {
 
 internal extension InputFieldView {
 
-    /// Update text in internal textfield when data changes and textfield is currently not being edited
-    func updateText(_ text: String) {
-        guard state != .selected else {
+    /// Updates text in internal textfield without notifying Combine event subscribers. Checks if textfield
+    /// is currently not being edited (textfield state is not `selected`) before changing the value.
+    /// - Parameters:
+    ///   - text: New text to set.
+    ///   - force: When force is set to `true`, skips checking if textfield is being edited and always changes the value.
+    func updateText(_ text: String, force: Bool = false) {
+        guard state != .selected || force else {
             return
         }
         textField.text = text
