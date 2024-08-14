@@ -48,7 +48,7 @@ import GoodStructs
 
 // MARK: - Validator
 
-public struct Validator: CriteriaConvertible {
+@MainActor public struct Validator: CriteriaConvertible {
 
     fileprivate var criteria: [Criterion] = []
 
@@ -56,7 +56,7 @@ public struct Validator: CriteriaConvertible {
         validate(input: input).isNil
     }
 
-    public func validate(input: String?) -> Error? {
+    public func validate(input: String?) -> (any ValidationError)? {
         let failure = criteria
             .map { (criterion: $0, result: $0.validate(input: input)) }
             .first { _, result in !result }
@@ -77,7 +77,7 @@ public struct Validator: CriteriaConvertible {
 
 // MARK: - Criterion
 
-public struct Criterion: Sendable, Then, CriteriaConvertible {
+@MainActor public struct Criterion: Sendable, Then, CriteriaConvertible {
 
     // MARK: - Variables
 
@@ -86,7 +86,7 @@ public struct Criterion: Sendable, Then, CriteriaConvertible {
     // MARK: - Constants
 
     private let regex: String?
-    private let predicate: GoodExtensions.Predicate<String?>?
+    private let predicate: MainPredicate<String?>?
 
     // MARK: - Initialization
 
@@ -95,7 +95,7 @@ public struct Criterion: Sendable, Then, CriteriaConvertible {
         self.predicate = nil
     }
 
-    public init(predicate: @escaping GoodExtensions.Predicate<String?>) {
+    public init(predicate: @escaping MainPredicate<String?>) {
         self.regex = nil
         self.predicate = predicate
     }

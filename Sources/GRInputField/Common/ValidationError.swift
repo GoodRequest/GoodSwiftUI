@@ -20,6 +20,7 @@ public enum InternalValidationError: ValidationError {
     case alwaysError
     case required
     case mismatch
+    case external(String)
 
     public var localizedDescription: String {
         switch self {
@@ -31,6 +32,9 @@ public enum InternalValidationError: ValidationError {
 
         case .mismatch:
             "Elements do not match"
+
+        case .external(let description):
+            description
         }
     }
 
@@ -67,6 +71,10 @@ public extension Criterion {
     static func acceptEmpty(_ criterion: Criterion) -> Criterion {
         Criterion { Criterion.nonEmpty.validate(input: $0) ? criterion.validate(input: $0) : true }
             .failWith(error: criterion.error)
+    }
+
+    static func external(error: (any Error)?) -> Criterion {
+        Criterion { _ in error == nil }.failWith(error: InternalValidationError.external(error?.localizedDescription ?? ""))
     }
 
 }

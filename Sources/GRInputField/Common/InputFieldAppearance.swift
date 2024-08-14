@@ -12,6 +12,7 @@ public struct InputFieldAppearance: Sendable {
     public var titleFont: UIFont?
     public var titleColor: UIColor?
 
+    /// Tint color of text field - eg. typing indicator
     public var textFieldTintColor: UIColor?
     public var textFieldFont: UIFont?
 
