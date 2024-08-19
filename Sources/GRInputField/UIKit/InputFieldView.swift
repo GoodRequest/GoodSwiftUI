@@ -144,7 +144,6 @@ public class InputFieldView: UIView {
     private let didResignSubject = PassthroughSubject<String, Never>()
     private(set) public lazy var didResignPublisher = didResignSubject.eraseToAnyPublisher()
 
-//    @available(*, deprecated, renamed: "didResignPublisher")
     public var resignPublisher: AnyPublisher<String, Never> { didResignPublisher.eraseToAnyPublisher() }
 
     private let returnSubject = PassthroughSubject<String, Never>()
@@ -217,7 +216,7 @@ private extension InputFieldView {
     }
 
     func setEnabled() {
-        textField.isUserInteractionEnabled = true
+        textField.isEnabled = true
         contentView.backgroundColor = standardAppearance.enabled?.contentBackgroundColor
         contentView.layer.borderColor = standardAppearance.enabled?.borderColor?.cgColor
 
@@ -233,7 +232,7 @@ private extension InputFieldView {
     }
 
     func setDisabled() {
-        textField.isUserInteractionEnabled = false
+        textField.isEnabled = false
         contentView.backgroundColor = standardAppearance.disabled?.contentBackgroundColor
         contentView.layer.borderColor = standardAppearance.disabled?.borderColor?.cgColor
 
@@ -476,7 +475,13 @@ public extension InputFieldView {
             textField.isEnabled
         }
         set {
-            state = newValue ? .enabled : .disabled
+            if case .enabled = state, newValue == false {
+                state = .disabled
+            } else if case .disabled = state, newValue == true {
+                state = .enabled
+            } else {
+                textField.isEnabled = newValue
+            }
         }
     }
 

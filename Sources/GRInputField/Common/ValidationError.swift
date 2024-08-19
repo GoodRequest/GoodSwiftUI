@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import GoodExtensions
 
 // MARK: - Validation errors
 
@@ -73,8 +74,9 @@ public extension Criterion {
             .failWith(error: criterion.error)
     }
 
-    nonisolated static func external(error: (any Error)?) -> Criterion {
-        Criterion { _ in error == nil }.failWith(error: InternalValidationError.external(error?.localizedDescription ?? ""))
+    nonisolated static func external(error: @autoclosure @escaping Supplier<(any Error)?>) -> Criterion {
+        Criterion { _ in error().isNil }
+            .failWith(error: InternalValidationError.external(error()?.localizedDescription ?? " "))
     }
 
 }

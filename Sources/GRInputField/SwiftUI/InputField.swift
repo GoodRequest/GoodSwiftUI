@@ -29,8 +29,10 @@ public struct InputField: UIViewRepresentable {
 
     private var traits: InputFieldTraits
     @ValidatorBuilder private var criteria: Supplier<Validator>
-    private var returnAction: MainClosure?
+    private var focusAction: MainClosure?
+    private var submitAction: MainClosure?
     private var resignAction: MainClosure?
+    private var editingChangedAction: MainClosure?
 
     // MARK: - Initialization
 
@@ -89,7 +91,8 @@ public struct InputField: UIViewRepresentable {
         let textFieldUUID = UUID()
 
         var cancellables = Set<AnyCancellable>()
-        var returnAction: MainClosure?
+        var focusAction: MainClosure?
+        var submitAction: MainClosure?
 
         public override init() {}
 
@@ -98,8 +101,9 @@ public struct InputField: UIViewRepresentable {
         /// - Parameter textField: Text field in question
         /// - Returns: true if keyboard should dismiss
         public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-            if let returnAction {
-                returnAction()
+            defer { submitAction?() }
+            if let focusAction {
+                focusAction()
                 return false
             } else {
                 return true
@@ -128,26 +132,29 @@ public struct InputField: UIViewRepresentable {
         view.attachTextFieldDelegate(context.coordinator)
 
         view.setValidationCriteria(criteria)
-        view.setPostValidationAction { validationResult in
-            if let error = validationResult {
-                setValidityStateInGroup(to: .invalid(error), in: context)
+        view.setPostValidationAction { validationError in
+            if let validationError {
+                syncValidationState(uiViewState: .error(validationError), context: context)
             } else {
-                setValidityStateInGroup(to: .valid, in: context)
+                syncValidationState(uiViewState: .valid, context: context)
             }
         }
 
-        context.coordinator.returnAction = returnAction
+        context.coordinator.focusAction = focusAction
+        context.coordinator.submitAction = submitAction
 
         let editingChangedCancellable = view.editingChangedPublisher
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { newText in
                 self.text = newText
-                invalidateValidityState(in: context)
+                syncValidationState(uiViewState: .invalid, context: context)
 
                 if hasFormatting {
                     applyFormatting()
                 }
+
+                editingChangedAction?()
             }
 
         let willResignCancellable = view.willResignPublisher
@@ -172,7 +179,7 @@ public struct InputField: UIViewRepresentable {
 
         return view
     }
-    
+
     public func updateUIView(_ uiView: ValidableInputFieldView, context: Context) {
         uiView.updateText(self.text, force: true)
 
@@ -181,7 +188,7 @@ public struct InputField: UIViewRepresentable {
             uiView.isEnabled = context.environment.isEnabled
         }
 
-        updateValidityState(uiView: uiView, context: context)
+        updateValidationState(uiView: uiView, context: context)
     }
 
     public static func dismantleUIView(_ uiView: ValidableInputFieldView, coordinator: Coordinator) {
@@ -193,7 +200,7 @@ public struct InputField: UIViewRepresentable {
     @available(iOS 16.0, *)
     public func sizeThatFits(_ proposal: ProposedViewSize, uiView: ValidableInputFieldView, context: Context) -> CGSize? {
         let intrinsicSize = uiView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
-        
+
         var optimalSize = CGSize()
         optimalSize.width = proposal.width ?? intrinsicSize.width
         optimalSize.height = intrinsicSize.height
@@ -203,24 +210,7 @@ public struct InputField: UIViewRepresentable {
 
     // MARK: - Validation
 
-    private func updateValidityState(uiView: ValidableInputFieldView, context: InputField.Context) {
-        let validityState = validityGroup[context.coordinator.textFieldUUID]
-        switch validityState {
-        case .valid:
-            uiView.unfail()
-
-        case .invalid(let error):
-            uiView.failSilently(with: error.localizedDescription)
-
-        case .none:
-            setValidityStateInGroup(to: .pending(uiView.validateSilently()), in: context)
-
-        case .pending:
-            break
-        }
-    }
-
-    private func setValidityStateInGroup(to validationState: ValidationState, in context: Context) {
+    private func syncValidationState(uiViewState validationState: ValidationState, context: InputField.Context) {
         Task { @MainActor in
             validityGroup.updateValue(
                 validationState,
@@ -229,10 +219,62 @@ public struct InputField: UIViewRepresentable {
         }
     }
 
-    private func invalidateValidityState(in context: Context) {
-        Task { @MainActor in
-            validityGroup.removeValue(forKey: context.coordinator.textFieldUUID)
+    private func syncValidationState(internalState: ValidationState, inputField: ValidableInputFieldView) {
+        switch internalState {
+        case .valid:
+            inputField.unfail()
+
+        case .error(let validationError):
+            inputField.failSilently(with: validationError.localizedDescription)
+
+        case .pending:
+            break
+
+        case .invalid:
+            break
         }
+    }
+
+    private func updateValidationState(uiView: ValidableInputFieldView, context: Context) {
+        let previousValidationState = validityGroup[context.coordinator.textFieldUUID]
+        let validationError = criteria().validate(input: text)
+        let newValidationState: ValidationState = if let validationError {
+            .error(validationError)
+        } else {
+            .valid
+        }
+
+        // On first appear
+        if previousValidationState == nil {
+            if uiView.text.isEmpty {
+                return syncValidationState(uiViewState: .pending(error: validationError), context: context)
+            } else {
+                changeValidationState(to: newValidationState, uiView: uiView, context: context)
+            }
+        }
+
+        if case .pending = previousValidationState {
+            return
+        }
+
+        if case .invalid = previousValidationState {
+            return syncValidationState(uiViewState: .pending(error: validationError), context: context)
+        }
+
+        guard newValidationState != previousValidationState else {
+            return
+        }
+
+        changeValidationState(to: newValidationState, uiView: uiView, context: context)
+    }
+
+    private func changeValidationState(to newState: ValidationState, uiView: ValidableInputFieldView, context: Context) {
+        // This is a new state!
+        // Update locally in SwiftUI storage
+        syncValidationState(uiViewState: newState, context: context)
+
+        // And push to UIView
+        syncValidationState(internalState: newState, inputField: uiView)
     }
 
     // MARK: - Formatting
@@ -257,7 +299,7 @@ public extension InputField {
         to field: Focus
     ) -> some View where Focus.RawValue == Int {
         var modifiedSelf = self
-        modifiedSelf.returnAction = { focusNextField(in: focusState) }
+        modifiedSelf.focusAction = { focusNextField(in: focusState) }
         return modifiedSelf.focused(focusState, equals: field)
     }
 
@@ -270,6 +312,18 @@ public extension InputField {
     func onResign(_ action: @escaping VoidClosure) -> Self {
         var modifiedSelf = self
         modifiedSelf.resignAction = action
+        return modifiedSelf
+    }
+
+    func onSubmit(_ action: @escaping VoidClosure) -> Self {
+        var modifiedSelf = self
+        modifiedSelf.submitAction = action
+        return modifiedSelf
+    }
+
+    func onEditingChanged(_ action: @escaping VoidClosure) -> Self {
+        var modifiedSelf = self
+        modifiedSelf.editingChangedAction = action
         return modifiedSelf
     }
 

@@ -29,14 +29,14 @@ let package = Package(
         .target(
             name: "GoodSwiftUI",
             dependencies: [],
-            swiftSettings: [.swiftLanguageVersion(.v6)]
+            swiftSettings: [.swiftLanguageMode(.v6)]
         ),
         .target(
             name: "GRAsyncImage",
             dependencies: [
                 .product(name: "GoodExtensions", package: "GoodExtensions-iOS"),
             ],
-            swiftSettings: [.swiftLanguageVersion(.v6)]
+            swiftSettings: [.swiftLanguageMode(.v6)]
         ),
         .target(
             name: "GRInputField",
@@ -44,12 +44,12 @@ let package = Package(
                 .product(name: "GoodExtensions", package: "GoodExtensions-iOS"),
                 .product(name: "GoodStructs", package: "GoodExtensions-iOS")
             ],
-            swiftSettings: [.swiftLanguageVersion(.v6)]
+            swiftSettings: [.swiftLanguageMode(.v6), .unsafeFlags(["-Onone"])]
         ),
         .testTarget(
             name: "GoodSwiftUITests",
             dependencies: ["GoodSwiftUI"],
-            swiftSettings: [.swiftLanguageVersion(.v6)]
+            swiftSettings: [.swiftLanguageMode(.v6)]
         ),
     ]
 )

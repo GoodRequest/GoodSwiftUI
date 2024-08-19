@@ -57,13 +57,13 @@ public struct Validator: CriteriaConvertible {
     }
 
     @MainActor public func validate(input: String?) -> (any ValidationError)? {
-        let failure = criteria
+        let failedCriterion = criteria
             .map { (criterion: $0, result: $0.validate(input: input)) }
             .first { _, result in !result }
             .map { $0.0 }
 
-        if let failure = failure {
-            return failure.error
+        if let failedCriterion = failedCriterion {
+            return failedCriterion.error
         }
 
         return nil
