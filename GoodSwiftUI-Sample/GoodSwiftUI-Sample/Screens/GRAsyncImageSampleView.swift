@@ -29,6 +29,7 @@ struct GRAsyncImageSampleView: View {
             .border(.red)
         }
         .padding()
+        .navigationTitle("Async Image")
     }
     
 }

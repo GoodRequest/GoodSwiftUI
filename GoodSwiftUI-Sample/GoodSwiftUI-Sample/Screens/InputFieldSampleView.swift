@@ -88,6 +88,7 @@ struct InputFieldSampleView: View {
             .padding()
         }
         .scrollDismissesKeyboard(.interactively)
+        .navigationTitle("Input fields")
     }
 
 }

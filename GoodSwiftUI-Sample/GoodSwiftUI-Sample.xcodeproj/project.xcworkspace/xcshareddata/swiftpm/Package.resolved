@@ -1,5 +1,5 @@
 {
-  "originHash" : "e1ab598d960ab6f121a49d6c2075b0d97871c1870344d287c4aa4b0148320b46",
+  "originHash" : "b46379685bdd89847bab0c4df516d7df815c27bd0571dd4246fe2285ce20a8fc",
   "pins" : [
     {
       "identity" : "combineext",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/goodrequest/goodextensions-ios",
       "state" : {
-        "branch" : "feature/swift6",
-        "revision" : "e8b5ff6d895eea309a68177c5db8f92a611ee856"
+        "revision" : "dd6fe6484a87f4ccde73136d491b2339e2a3ab98",
+        "version" : "2.0.0"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
-        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
-        "version" : "509.1.1"
+        "revision" : "cb53fa1bd3219b0b23ded7dfdd3b2baff266fd25",
+        "version" : "600.0.0"
       }
     }
   ],

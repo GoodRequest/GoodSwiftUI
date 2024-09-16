@@ -7,40 +7,6 @@
 
 import SwiftUI
 
-// MARK: - Samples
-
-enum Sample: CaseIterable, Identifiable, Hashable {
-    
-    var id: String { UUID().uuidString }
-    
-    case grAsyncImage
-    case inputFields
-
-    var title: String {
-        switch self {
-        case .grAsyncImage:
-            "Async Image"
-
-        case .inputFields:
-            "Input fields"
-        }
-    }
-    
-    var view: some View {
-        Group {
-            switch self {
-            case .grAsyncImage:
-                GRAsyncImageSampleView()
-
-            case .inputFields:
-                InputFieldSampleView()
-            }
-        }
-        .navigationTitle(self.title)
-    }
-    
-}
-
 // MARK: - Samples List View
 
 struct SamplesListView: View {
@@ -49,11 +15,26 @@ struct SamplesListView: View {
     
     var body: some View {
         NavigationStack {
-            List(Sample.allCases) { example in
-                NavigationLink(example.title, value: example)
+            List {
+                NavigationLink {
+                    GRAsyncImageSampleView()
+                } label: {
+                    Text("Async Image")
+                }
+
+                NavigationLink {
+                    InputFieldSampleView()
+                } label: {
+                    Text("Input fields")
+                }
+
+                NavigationLink {
+                    ReadableContentWidthView()
+                } label: {
+                    Text("Readable content width")
+                }
             }
             .navigationTitle("Samples")
-            .navigationDestination(for: Sample.self) { $0.view }
         }
     }
     
