@@ -18,22 +18,19 @@ public extension ValidityGroup {
     }
 
     mutating func validateAll() {
-        self = mapValues { $0.deterministicState }
-    }
-
-    internal mutating func determine(fieldWithId uuid: UUID) {
-        self[uuid] = self[uuid]?.deterministicState
+        removeAll()
     }
 
 }
 
 // MARK: - Validation State
 
-public enum ValidationState {
+public enum ValidationState: Equatable, Sendable {
 
     case valid
-    case pending((any ValidationError)?)
-    case invalid(any ValidationError)
+    case error(any ValidationError)
+    case pending(error: (any ValidationError)?)
+    case invalid
 
     var isValid: Bool {
         if case .valid = self {
@@ -47,14 +44,47 @@ public enum ValidationState {
 
     var deterministicState: ValidationState {
         switch self {
-        case .valid, .invalid:
+        case .valid, .error, .invalid:
             return self
 
         case .pending(let error):
             if let error {
-                return .invalid(error)
+                return .error(error)
             } else {
                 return .valid
+            }
+        }
+    }
+
+    public static func == (lhs: ValidationState, rhs: ValidationState) -> Bool {
+        switch lhs {
+        case .valid:
+            switch rhs {
+            case .valid:
+                return true
+            default:
+                return false
+            }
+        case .error(let lhsValidationError):
+            switch rhs {
+            case .error(let rhsValidationError):
+                return lhsValidationError.localizedDescription == rhsValidationError.localizedDescription
+            default:
+                return false
+            }
+        case .pending(let lhsValidationError):
+            switch rhs {
+            case .pending(let rhsValidationError):
+                return lhsValidationError?.localizedDescription == rhsValidationError?.localizedDescription
+            default:
+                return false
+            }
+        case .invalid:
+            switch rhs {
+            case .invalid:
+                return true
+            default:
+                return false
             }
         }
     }

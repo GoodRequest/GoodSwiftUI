@@ -52,18 +52,18 @@ public struct Validator: CriteriaConvertible {
 
     fileprivate var criteria: [Criterion] = []
 
-    public func isValid(input: String?) -> Bool {
+    @MainActor public func isValid(input: String?) -> Bool {
         validate(input: input).isNil
     }
 
-    public func validate(input: String?) -> (any ValidationError)? {
-        let failure = criteria
+    @MainActor public func validate(input: String?) -> (any ValidationError)? {
+        let failedCriterion = criteria
             .map { (criterion: $0, result: $0.validate(input: input)) }
             .first { _, result in !result }
             .map { $0.0 }
 
-        if let failure = failure {
-            return failure.error
+        if let failedCriterion = failedCriterion {
+            return failedCriterion.error
         }
 
         return nil
@@ -77,7 +77,7 @@ public struct Validator: CriteriaConvertible {
 
 // MARK: - Criterion
 
-public final class Criterion: Then, CriteriaConvertible {
+public struct Criterion: Sendable, Then, CriteriaConvertible {
 
     // MARK: - Variables
 
@@ -86,7 +86,7 @@ public final class Criterion: Then, CriteriaConvertible {
     // MARK: - Constants
 
     private let regex: String?
-    private let predicate: GoodExtensions.Predicate<String?>?
+    private let predicate: MainPredicate<String?>?
 
     // MARK: - Initialization
 
@@ -95,14 +95,15 @@ public final class Criterion: Then, CriteriaConvertible {
         self.predicate = nil
     }
 
-    public init(predicate: @escaping GoodExtensions.Predicate<String?>) {
+    public init(predicate: @escaping MainPredicate<String?>) {
         self.regex = nil
         self.predicate = predicate
     }
 
     public func failWith(error: any ValidationError) -> Self {
-        self.error = error
-        return self
+        var mutableSelf = self
+        mutableSelf.error = error
+        return mutableSelf
     }
 
     public func asCriteria() -> [Criterion] {
@@ -138,7 +139,7 @@ extension Criterion: Hashable {
 
 extension Criterion {
 
-    public func validate(input: String?) -> Bool {
+    @MainActor public func validate(input: String?) -> Bool {
         if regex != nil {
             guard let input = input else { return false }
 

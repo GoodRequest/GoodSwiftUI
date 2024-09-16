@@ -11,10 +11,12 @@ import UIKit
 
 public class ValidableInputFieldView: InputFieldView {
 
+    public typealias PostValidationAction = @MainActor ((any ValidationError)?) -> ()
+
     // MARK: - Variables
 
     private var validator: (() -> Validator)?
-    private var afterValidation: Consumer<(any ValidationError)?>?
+    private var afterValidation: PostValidationAction?
 
     // MARK: - Initialization
 
@@ -36,7 +38,7 @@ public class ValidableInputFieldView: InputFieldView {
         self.validator = validator
     }
 
-    public func setPostValidationAction(_ action: @escaping Consumer<(any ValidationError)?>) {
+    public func setPostValidationAction(_ action: @escaping PostValidationAction) {
         self.afterValidation = action
     }
 

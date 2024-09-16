@@ -24,28 +24,28 @@ extension InputFieldView {
             eyeImageVisible: UIImage(systemName: "eye.slash"),
             enabled: InputFieldViewStateAppearance(
                 placeholderColor: UIColor.darkGray,
-                contentBackgroundColor: UIColor.white,
+                contentBackgroundColor: UIColor.tertiarySystemBackground,
                 textFieldTextColor: UIColor.systemBlue,
                 borderColor: UIColor.gray,
                 hintColor: UIColor.darkGray
             ),
             selected: InputFieldViewStateAppearance(
                 placeholderColor: UIColor.darkGray,
-                contentBackgroundColor: UIColor.white,
+                contentBackgroundColor: UIColor.tertiarySystemBackground,
                 textFieldTextColor: UIColor.systemBlue,
                 borderColor: UIColor.gray,
                 hintColor: UIColor.darkGray
             ),
             disabled: InputFieldViewStateAppearance(
                 placeholderColor: UIColor.darkGray,
-                contentBackgroundColor: UIColor.lightGray,
+                contentBackgroundColor: UIColor.secondarySystemBackground,
                 textFieldTextColor: UIColor.darkGray,
                 borderColor: UIColor.gray,
                 hintColor: UIColor.darkGray
             ),
             failed: InputFieldViewStateAppearance(
                 placeholderColor: UIColor.darkGray,
-                contentBackgroundColor: UIColor.white,
+                contentBackgroundColor: UIColor.tertiarySystemBackground,
                 textFieldTextColor: UIColor.systemBlue,
                 borderColor: UIColor.systemRed,
                 hintColor: UIColor.systemRed

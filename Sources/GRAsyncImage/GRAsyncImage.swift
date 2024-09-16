@@ -34,7 +34,7 @@ public struct GRAsyncImage<FailurePlaceholder: View, LoadingPlaceholder: View>: 
         onSuccess: VoidClosure? = nil,
         onFailure: VoidClosure? = nil
     ) {
-        _imageLoader = StateObject(wrappedValue: GRImageLoader(url: url, imageCache: DefaultImageCache.shared))
+        _imageLoader = StateObject(wrappedValue: GRImageLoader(url: url))
 
         self.url = url
         self.failurePlaceholder = failurePlaceholder()
@@ -58,12 +58,12 @@ public struct GRAsyncImage<FailurePlaceholder: View, LoadingPlaceholder: View>: 
                     Image(uiImage: image)
                         .resizable()
                 } else {
-                    Button(action: { loadImage(url: url) }, label: { failurePlaceholder })
+                    Button(action: { startLoadingImage(url: url) }, label: { failurePlaceholder })
                 }
 
             case .failure:
-                if let url, allowsReloading {
-                    Button(action: { loadImage(url: url) }, label: { failurePlaceholder })
+                if allowsReloading {
+                    Button(action: { startLoadingImage(url: url) }, label: { failurePlaceholder })
                 } else {
                     failurePlaceholder
                 }
@@ -72,8 +72,8 @@ public struct GRAsyncImage<FailurePlaceholder: View, LoadingPlaceholder: View>: 
                 Color.clear
             }
         }
-        .onAppear { loadImage(url: url) }
-        .onChange(of: url) { url in loadImage(url: url) }
+        .onAppear { startLoadingImage(url: url) }
+        .onChange(of: url) { url in startLoadingImage(url: url) }
         .onChange(of: imageLoader.status) {
             switch $0 {
             case .loading:
@@ -93,19 +93,10 @@ public struct GRAsyncImage<FailurePlaceholder: View, LoadingPlaceholder: View>: 
 
     // MARK: - Private
 
-    private func loadImage(url: URL?) {
+    private func startLoadingImage(url: URL?) {
         Task {
             await imageLoader.load(url)
         }
-    }
-
-}
-
-@available(iOS 14.0, *)
-extension GRAsyncImage: Equatable {
-
-    public static func == (lhs: GRAsyncImage, rhs: GRAsyncImage) -> Bool {
-        lhs.url == rhs.url
     }
 
 }

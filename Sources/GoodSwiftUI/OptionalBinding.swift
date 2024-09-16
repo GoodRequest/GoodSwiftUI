@@ -14,7 +14,7 @@ import SwiftUI
 ///  @State private var text: String? = nil
 ///  InputField(text: $text ?? "")
 /// ```
-public func ??<T>(lhs: Binding<Optional<T>>, rhs: T) -> Binding<T> {
+@MainActor public func ??<T>(lhs: Binding<Optional<T>>, rhs: T) -> Binding<T> {
     Binding(
         get: { lhs.wrappedValue ?? rhs },
         set: { lhs.wrappedValue = $0 }

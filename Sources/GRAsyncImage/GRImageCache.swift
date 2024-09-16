@@ -7,22 +7,13 @@
 
 import Foundation
 
-public protocol GRImageCacheType {
-
-    func object(forKey url: NSURL) -> Data?
-    func set(object: NSData, forKey url: NSURL)
-
-}
-
-final class DefaultImageCache {
+@MainActor final class GRImageCache {
 
     // MARK: - Typealiases
 
     typealias ImageCache = NSCache<NSURL, NSData>
 
     // MARK: - Properties
-
-    static var shared = DefaultImageCache()
 
     private lazy var cache: ImageCache = {
         let cache = ImageCache()
@@ -32,23 +23,20 @@ final class DefaultImageCache {
         return cache
     }()
 
-    // MARK: - Initialization
+    // MARK: - Singleton
+
+    static let shared = GRImageCache()
 
     private init() {}
 
-}
-
-// MARK: - Protocol implementation
-
-extension DefaultImageCache: GRImageCacheType {
+    // MARK: - Internal
 
     func object(forKey url: NSURL) -> Data? {
         return cache.object(forKey: url) as? Data
     }
 
-    func set(object: NSData, forKey url: NSURL) {
-        cache.setObject(object, forKey: url)
+    func set(object: Data, forKey url: URL) {
+        cache.setObject(object as NSData, forKey: url as NSURL)
     }
 
 }
-
