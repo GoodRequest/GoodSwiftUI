@@ -44,7 +44,7 @@ let package = Package(
                 .product(name: "GoodExtensions", package: "GoodExtensions-iOS"),
                 .product(name: "GoodStructs", package: "GoodExtensions-iOS")
             ],
-            swiftSettings: [.swiftLanguageMode(.v6), .unsafeFlags(["-Onone"])]
+            swiftSettings: [.swiftLanguageMode(.v6)]
         ),
         .testTarget(
             name: "GoodSwiftUITests",
