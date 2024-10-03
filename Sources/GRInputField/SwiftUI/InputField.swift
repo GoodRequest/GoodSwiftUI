@@ -24,8 +24,8 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
     public let placeholder: String?
     public let hint: String?
 
-    public let leftView: Supplier<LeftView>
-    public let rightView: Supplier<RightView>
+    public let leftView: MainSupplier<LeftView>
+    public let rightView: MainSupplier<RightView>
 
     private var hasFormatting: Bool = false
 
@@ -43,8 +43,8 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
         title: String? = nil,
         placeholder: String? = nil,
         hint: String? = " ",
-        leftView: @escaping Supplier<LeftView> = { EmptyView() },
-        rightView: @escaping Supplier<RightView> = { EmptyView() }
+        leftView: @escaping MainSupplier<LeftView> = { EmptyView() },
+        rightView: @escaping MainSupplier<RightView> = { EmptyView() }
     ) {
         self._text = text
         self._validityGroup = Binding.constant([:])
@@ -71,8 +71,8 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
         title: String? = nil,
         placeholder: String? = nil,
         hint: String? = " ",
-        leftView: @escaping Supplier<LeftView> = { EmptyView() },
-        rightView: @escaping Supplier<RightView> = { EmptyView() }
+        leftView: @escaping MainSupplier<LeftView> = { EmptyView() },
+        rightView: @escaping MainSupplier<RightView> = { EmptyView() }
     ) where FormatterType.FormatInput == FormattedType, FormatterType.FormatOutput == String {
         let formattedBinding = Binding(get: {
             let formattedString = format.format(value.wrappedValue)
