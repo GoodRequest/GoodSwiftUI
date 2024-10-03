@@ -28,10 +28,15 @@ public class InputFieldView: UIView {
 
         public var title: String?
         public var text: String?
+
+        /// Custom left image.
         public var leftImage: UIImage?
 
-        /// Custom right button. This will be ignored when input field is secure.
-        public var rightButton: UIButton?
+        /// Custom left view. This will be ignored when `leftImage` property is set.
+        public var leftView: UIView?
+
+        /// Custom right view. This will be ignored when input field is secure.
+        public var rightView: UIView?
         public var placeholder: String?
         public var hint: String?
         public var traits: InputFieldTraits?
@@ -40,7 +45,8 @@ public class InputFieldView: UIView {
             title: String? = nil,
             text: String? = nil,
             leftImage: UIImage? = nil,
-            rightButton: UIButton? = nil,
+            leftView: UIView? = nil,
+            rightView: UIView? = nil,
             placeholder: String? = nil,
             hint: String? = nil,
             traits: InputFieldTraits? = nil
@@ -48,7 +54,8 @@ public class InputFieldView: UIView {
             self.title = title
             self.text = text
             self.leftImage = leftImage
-            self.rightButton = rightButton
+            self.leftView = leftView
+            self.rightView = rightView
             self.placeholder = placeholder
             self.hint = hint
             self.traits = traits
@@ -82,7 +89,7 @@ public class InputFieldView: UIView {
 
     private let contentView = UIView()
 
-    private let leftImageView = UIImageView().then {
+    private let leftContainerImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
@@ -92,7 +99,12 @@ public class InputFieldView: UIView {
         $0.setContentHuggingPriority(.defaultLow, for: .horizontal)
     }
 
+    private let rightView = UIView().then {
+        $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+    }
+
     private lazy var eyeButton = UIButton().then {
+        $0.translatesAutoresizingMaskIntoConstraints = false
         $0.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
@@ -332,7 +344,7 @@ private extension InputFieldView {
             verticalStackView.addArrangedSubview($0)
         }
 
-        [leftImageView, textField].forEach {
+        [leftContainerImageView, textField, rightView].forEach {
             horizontalStackView.addArrangedSubview($0)
         }
 
@@ -457,6 +469,66 @@ private extension InputFieldView {
 
 }
 
+// MARK: - Internal
+
+internal extension InputFieldView {
+
+    func setupCustomLeftView(leftImage: UIImage?, leftView: UIView?) {
+        /// Left view/image
+        leftContainerImageView.subviews.forEach { $0.removeFromSuperview() }
+        leftContainerImageView.image = nil
+
+        if let leftImage {
+            leftContainerImageView.image = leftImage
+            leftContainerImageView.isHidden = false
+        } else if let leftView {
+            leftContainerImageView.isHidden = false
+            leftContainerImageView.addSubview(leftView)
+
+            leftView.translatesAutoresizingMaskIntoConstraints = false
+            leftView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+            NSLayoutConstraint.activate([
+                leftView.topAnchor.constraint(equalTo: leftContainerImageView.topAnchor),
+                leftView.leadingAnchor.constraint(equalTo: leftContainerImageView.leadingAnchor),
+                leftView.trailingAnchor.constraint(equalTo: leftContainerImageView.trailingAnchor),
+                leftView.bottomAnchor.constraint(equalTo: leftContainerImageView.bottomAnchor)
+            ])
+        } else {
+            leftContainerImageView.isHidden = true
+        }
+    }
+
+    func setupCustomRightView(rightView rightSubview: UIView?) {
+        /// Right view
+        if let rightSubview, !isSecureTextEntry {
+            rightView.subviews.forEach { $0.removeFromSuperview() }
+            rightView.addSubview(rightSubview)
+
+            rightSubview.translatesAutoresizingMaskIntoConstraints = false
+            rightSubview.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+            NSLayoutConstraint.activate([
+                rightSubview.topAnchor.constraint(equalTo: rightView.topAnchor),
+                rightSubview.leadingAnchor.constraint(equalTo: rightView.leadingAnchor),
+                rightSubview.trailingAnchor.constraint(equalTo: rightView.trailingAnchor),
+                rightSubview.bottomAnchor.constraint(equalTo: rightView.bottomAnchor)
+            ])
+        } else if isSecureTextEntry {
+            rightView.subviews.forEach { $0.removeFromSuperview() }
+            rightView.addSubview(eyeButton)
+
+            NSLayoutConstraint.activate([
+                eyeButton.topAnchor.constraint(equalTo: rightView.topAnchor),
+                eyeButton.leadingAnchor.constraint(equalTo: rightView.leadingAnchor),
+                eyeButton.trailingAnchor.constraint(equalTo: rightView.trailingAnchor),
+                eyeButton.bottomAnchor.constraint(equalTo: rightView.bottomAnchor)
+            ])
+
+            setupEyeButtonHandler()
+        }
+    }
+
+}
+
 // MARK: - Public
 
 public extension InputFieldView {
@@ -492,26 +564,8 @@ public extension InputFieldView {
         setupTraits(traits: model.traits ?? .default)
         setupToolbarIfNeeded(traits: model.traits ?? .default)
 
-        /// Left image
-        if let leftImage = model.leftImage {
-            leftImageView.image = leftImage
-            leftImageView.isHidden = false
-        } else {
-            leftImageView.isHidden = true
-        }
-
-        /// Secure entry
-        if isSecureTextEntry {
-            setupEyeButtonHandler()
-            horizontalStackView.addArrangedSubview(eyeButton)
-        }
-
-        /// Right button
-        if let rightButton = model.rightButton, !isSecureTextEntry {
-            rightButton.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
-            rightButton.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-            horizontalStackView.addArrangedSubview(rightButton)
-        }
+        setupCustomLeftView(leftImage: model.leftImage, leftView: model.leftView)
+        setupCustomRightView(rightView: model.rightView)
 
         /// Input field title
         if let title = model.title {

@@ -47,6 +47,7 @@ struct InputFieldSampleView: View {
 
     @State private var nameEnabled: Bool = true
     @State private var passwordEnabled: Bool = true
+    @State private var showsRightAlert: Bool = false
 
     // MARK: - Properties
 
@@ -66,6 +67,7 @@ struct InputFieldSampleView: View {
             VStack {
                 nameInputField
                 pinCodeInputField
+                customViewsInputField
                 formattedInputField
 
                 // Input field controls
@@ -151,6 +153,29 @@ extension InputFieldSampleView {
             placeholder: "0 %"
         )
         .inputFieldTraits(keyboardType: .numbersAndPunctuation)
+    }
+
+    private var customViewsInputField: some View {
+        InputField(
+            text: .constant("Custom views"),
+            title: "Left and right input views",
+            placeholder: nil,
+            hint: nil,
+            leftView: {
+                Text("+421 \(password)")
+            },
+            rightView: {
+                Button {
+                    showsRightAlert.toggle()
+                } label: {
+                    VStack {
+                        Text("Hello")
+                        Text("world")
+                    }
+                }
+            }
+        )
+        .alert("Alert", isPresented: $showsRightAlert, actions: {})
     }
 
     private var validityGroups: some View {
@@ -275,7 +300,7 @@ private final class InputFieldSampleViewController: UIViewController {
             title: "Title",
             text: .placeholder(length: 20),
             leftImage: nil,
-            rightButton: nil,
+            rightView: nil,
             placeholder: "Placeholder",
             hint: " ",
             traits: .default
@@ -286,7 +311,7 @@ private final class InputFieldSampleViewController: UIViewController {
             title: "Title",
             text: .placeholder(length: 8),
             leftImage: nil,
-            rightButton: nil,
+            rightView: nil,
             placeholder: "Placeholder",
             hint: " ",
             traits: .init(isSecureTextEntry: true)
@@ -300,7 +325,7 @@ private final class InputFieldSampleViewController: UIViewController {
             title: "Title",
             text: "0 %",
             leftImage: nil,
-            rightButton: nil,
+            rightView: nil,
             placeholder: "Placeholder",
             hint: " ",
             traits: .init(keyboardType: .numberPad)

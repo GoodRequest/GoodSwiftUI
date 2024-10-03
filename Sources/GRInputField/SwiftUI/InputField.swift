@@ -11,7 +11,7 @@ import SwiftUI
 
 // MARK: - View
 
-public struct InputField: UIViewRepresentable {
+public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
 
     // MARK: - Wrappers
 
@@ -23,7 +23,9 @@ public struct InputField: UIViewRepresentable {
     public let title: String?
     public let placeholder: String?
     public let hint: String?
-    public let rightButton: Supplier<UIButton>?
+
+    public let leftView: Supplier<LeftView>
+    public let rightView: Supplier<RightView>
 
     private var hasFormatting: Bool = false
 
@@ -41,14 +43,14 @@ public struct InputField: UIViewRepresentable {
         title: String? = nil,
         placeholder: String? = nil,
         hint: String? = " ",
-        rightButton: Supplier<UIButton>? = nil
+        leftView: @escaping Supplier<LeftView> = { EmptyView() },
+        rightView: @escaping Supplier<RightView> = { EmptyView() }
     ) {
         self._text = text
         self._validityGroup = Binding.constant([:])
         self.title = title
         self.placeholder = placeholder
         self.hint = hint
-        self.rightButton = rightButton
         self.traits = InputFieldTraits()
 
         @ValidatorBuilder @Sendable func alwaysValidCriteria() -> Validator {
@@ -57,6 +59,9 @@ public struct InputField: UIViewRepresentable {
 
         // closures cannot take @ValidationBuilder attribute, must be a function reference
         self.criteria = alwaysValidCriteria
+
+        self.leftView = leftView
+        self.rightView = rightView
     }
 
     @available(iOS 15.0, *)
@@ -66,7 +71,8 @@ public struct InputField: UIViewRepresentable {
         title: String? = nil,
         placeholder: String? = nil,
         hint: String? = " ",
-        rightButton: Supplier<UIButton>? = nil
+        leftView: @escaping Supplier<LeftView> = { EmptyView() },
+        rightView: @escaping Supplier<RightView> = { EmptyView() }
     ) where FormatterType.FormatInput == FormattedType, FormatterType.FormatOutput == String {
         let formattedBinding = Binding(get: {
             let formattedString = format.format(value.wrappedValue)
@@ -80,7 +86,14 @@ public struct InputField: UIViewRepresentable {
             }
         })
 
-        self.init(text: formattedBinding, title: title, placeholder: placeholder, hint: hint, rightButton: rightButton)
+        self.init(
+            text: formattedBinding,
+            title: title,
+            placeholder: placeholder,
+            hint: hint,
+            leftView: leftView,
+            rightView: rightView
+        )
         self.hasFormatting = true
     }
 
@@ -122,7 +135,8 @@ public struct InputField: UIViewRepresentable {
         let view = ValidableInputFieldView()
         let model = InputFieldView.Model(
             title: title,
-            rightButton: rightButton?(),
+            leftView: _UIHostingView(rootView: leftView()),
+            rightView: _UIHostingView(rootView: rightView()),
             placeholder: placeholder,
             hint: hint,
             traits: traits
@@ -182,6 +196,14 @@ public struct InputField: UIViewRepresentable {
 
     public func updateUIView(_ uiView: ValidableInputFieldView, context: Context) {
         uiView.updateText(self.text, force: true)
+
+        uiView.setupCustomLeftView(
+            leftImage: nil,
+            leftView: _UIHostingView(rootView: leftView())
+        )
+        uiView.setupCustomRightView(
+            rightView: _UIHostingView(rootView: rightView())
+        )
 
         // Equality check to prevent unintended side effects
         if uiView.isEnabled != context.environment.isEnabled {
