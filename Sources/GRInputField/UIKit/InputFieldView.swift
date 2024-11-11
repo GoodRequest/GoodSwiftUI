@@ -96,7 +96,7 @@ public class InputFieldView: UIView {
 
     private let textField = UITextField().then {
         $0.textAlignment = .left
-        $0.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        $0.setContentHuggingPriority(UILayoutPriority(0), for: .horizontal)
     }
 
     private let rightView = UIView().then {
@@ -344,7 +344,7 @@ private extension InputFieldView {
             verticalStackView.addArrangedSubview($0)
         }
 
-        [leftContainerImageView, textField, rightView].forEach {
+        [leftContainerImageView, textField].forEach {
             horizontalStackView.addArrangedSubview($0)
         }
 
@@ -501,11 +501,14 @@ internal extension InputFieldView {
     func setupCustomRightView(rightView rightSubview: UIView?) {
         /// Right view
         if let rightSubview, !isSecureTextEntry {
+            horizontalStackView.addArrangedSubview(rightView)
             rightView.subviews.forEach { $0.removeFromSuperview() }
             rightView.addSubview(rightSubview)
 
             rightSubview.translatesAutoresizingMaskIntoConstraints = false
             rightSubview.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+            rightSubview.setContentCompressionResistancePriority(.required, for: .horizontal)
+
             NSLayoutConstraint.activate([
                 rightSubview.topAnchor.constraint(equalTo: rightView.topAnchor),
                 rightSubview.leadingAnchor.constraint(equalTo: rightView.leadingAnchor),
@@ -513,6 +516,7 @@ internal extension InputFieldView {
                 rightSubview.bottomAnchor.constraint(equalTo: rightView.bottomAnchor)
             ])
         } else if isSecureTextEntry {
+            horizontalStackView.addArrangedSubview(rightView)
             rightView.subviews.forEach { $0.removeFromSuperview() }
             rightView.addSubview(eyeButton)
 

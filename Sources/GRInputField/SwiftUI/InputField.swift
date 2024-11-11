@@ -106,6 +106,7 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
         var cancellables = Set<AnyCancellable>()
         var focusAction: MainClosure?
         var submitAction: MainClosure?
+        var textLimitation: String?
 
         public override init() {}
 
@@ -123,6 +124,34 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
             }
         }
 
+        public func textField(
+            _ textField: UITextField,
+            shouldChangeCharactersIn range: NSRange,
+            replacementString string: String
+        ) -> Bool {
+            guard let textLimitation else { return true }
+
+            if let text = textField.text, let textRange = Range(range, in: text) {
+                let updatedText = text.replacingCharacters(in: textRange, with: string)
+
+                do {
+                    let regex = try NSRegularExpression(pattern: textLimitation, options: [])
+                    let range = NSRange(location: .zero, length: updatedText.utf16.count)
+                    let matches = regex.matches(
+                        in: updatedText.folding(options: .diacriticInsensitive, locale: nil),
+                        options: [],
+                        range: range
+                    )
+
+                    return !matches.isEmpty
+                } catch {
+                    debugPrint("Invalid regular expression: \(error.localizedDescription)")
+
+                    return false
+                }
+            }
+            return false
+        }
     }
 
     // MARK: - UIView representable
@@ -135,8 +164,8 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
         let view = ValidableInputFieldView()
         let model = InputFieldView.Model(
             title: title,
-            leftView: _UIHostingView(rootView: leftView()),
-            rightView: _UIHostingView(rootView: rightView()),
+            leftView: getAnchorView(from: leftView()),
+            rightView: getAnchorView(from: rightView()),
             placeholder: placeholder,
             hint: hint,
             traits: traits
@@ -156,6 +185,7 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
 
         context.coordinator.focusAction = focusAction
         context.coordinator.submitAction = submitAction
+        context.coordinator.textLimitation = traits.textLimitation
 
         let editingChangedCancellable = view.editingChangedPublisher
             .removeDuplicates()
@@ -199,10 +229,10 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
 
         uiView.setupCustomLeftView(
             leftImage: nil,
-            leftView: _UIHostingView(rootView: leftView())
+            leftView: getAnchorView(from: leftView())
         )
         uiView.setupCustomRightView(
-            rightView: _UIHostingView(rootView: rightView())
+            rightView: getAnchorView(from: rightView())
         )
 
         // Equality check to prevent unintended side effects
@@ -215,6 +245,12 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
 
     public static func dismantleUIView(_ uiView: ValidableInputFieldView, coordinator: Coordinator) {
         coordinator.cancellables.removeAll()
+    }
+
+    private func getAnchorView<V: View>(from view: V) -> _UIHostingView<V>? {
+        guard !(view is EmptyView) else { return .none }
+
+        return _UIHostingView(rootView: view)
     }
 
     // MARK: - Layout
@@ -364,7 +400,8 @@ public extension InputField {
         numpadReturnKeyTitle: String? = "Done",
         clearButtonMode: UITextField.ViewMode = .whileEditing,
         isSecureTextEntry: Bool = false,
-        isHapticsAllowed: Bool = true
+        isHapticsAllowed: Bool = true,
+        textLimitation: String? = .none
     ) -> Self {
         var modifiedSelf = self
         modifiedSelf.traits = InputFieldTraits(
@@ -376,7 +413,8 @@ public extension InputField {
             numpadReturnKeyTitle: numpadReturnKeyTitle,
             clearButtonMode: clearButtonMode,
             isSecureTextEntry: isSecureTextEntry,
-            isHapticsAllowed: isHapticsAllowed
+            isHapticsAllowed: isHapticsAllowed,
+            textLimitation: textLimitation
         )
         return modifiedSelf
     }
