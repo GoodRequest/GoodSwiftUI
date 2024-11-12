@@ -154,6 +154,15 @@ extension InputFieldSampleView {
             placeholder: "0 %"
         )
         .inputFieldTraits(keyboardType: .numbersAndPunctuation)
+        .onSubmit {
+            print("Submit action")
+        }
+        .onResign {
+            print("Resign action")
+        }
+        .onEditingChanged {
+            print("Value changed")
+        }
     }
 
     private var customViewsInputField: some View {

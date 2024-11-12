@@ -11,7 +11,7 @@ import Foundation
 
 public typealias ValidityGroup = [UUID: ValidationState]
 
-public extension ValidityGroup {
+@MainActor public extension ValidityGroup {
 
     func allValid() -> Bool {
         isEmpty ? false : allSatisfy { $0.value.isValid }
@@ -25,7 +25,7 @@ public extension ValidityGroup {
 
 // MARK: - Validation State
 
-public enum ValidationState: Equatable, Sendable {
+@MainActor public enum ValidationState: Sendable {
 
     case valid
     case error(any ValidationError)
@@ -52,39 +52,6 @@ public enum ValidationState: Equatable, Sendable {
                 return .error(error)
             } else {
                 return .valid
-            }
-        }
-    }
-
-    public static func == (lhs: ValidationState, rhs: ValidationState) -> Bool {
-        switch lhs {
-        case .valid:
-            switch rhs {
-            case .valid:
-                return true
-            default:
-                return false
-            }
-        case .error(let lhsValidationError):
-            switch rhs {
-            case .error(let rhsValidationError):
-                return lhsValidationError.localizedDescription == rhsValidationError.localizedDescription
-            default:
-                return false
-            }
-        case .pending(let lhsValidationError):
-            switch rhs {
-            case .pending(let rhsValidationError):
-                return lhsValidationError?.localizedDescription == rhsValidationError?.localizedDescription
-            default:
-                return false
-            }
-        case .invalid:
-            switch rhs {
-            case .invalid:
-                return true
-            default:
-                return false
             }
         }
     }
