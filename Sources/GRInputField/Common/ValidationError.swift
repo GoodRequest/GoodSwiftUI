@@ -10,11 +10,7 @@ import GoodExtensions
 
 // MARK: - Validation errors
 
-@MainActor public protocol ValidationError: Error {
-
-    var localizedDescription: String { get }
-
-}
+public protocol ValidationError: LocalizedError {}
 
 public enum InternalValidationError: ValidationError {
 
@@ -23,7 +19,7 @@ public enum InternalValidationError: ValidationError {
     case mismatch
     case external(MainSupplier<String>)
 
-    public var localizedDescription: String {
+    public var errorDescription: String? {
         switch self {
         case .alwaysError:
             "Error"
@@ -35,7 +31,9 @@ public enum InternalValidationError: ValidationError {
             "Elements do not match"
 
         case .external(let description):
-            description()
+            MainActor.assumeIsolated {
+                description()
+            }
         }
     }
 
@@ -74,7 +72,7 @@ public extension Criterion {
             .failWith(error: criterion.error)
     }
 
-    static func external(error: @MainActor @escaping () -> (any Error)?) -> Criterion {
+    static func external(error: @MainActor @escaping () -> (any LocalizedError)?) -> Criterion {
         Criterion { _ in error().isNil }
             .failWith(error: InternalValidationError.external { error()?.localizedDescription ?? " " })
     }

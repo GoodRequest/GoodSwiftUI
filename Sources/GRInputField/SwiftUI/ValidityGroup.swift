@@ -25,7 +25,7 @@ public typealias ValidityGroup = [UUID: ValidationState]
 
 // MARK: - Validation State
 
-@MainActor public enum ValidationState: Sendable {
+@MainActor public enum ValidationState: Sendable, Equatable {
 
     case valid
     case error(any ValidationError)
@@ -53,6 +53,25 @@ public typealias ValidityGroup = [UUID: ValidationState]
             } else {
                 return .valid
             }
+        }
+    }
+
+    nonisolated public static func == (lhs: ValidationState, rhs: ValidationState) -> Bool {
+        switch (lhs, rhs) {
+        case (.valid, .valid):
+            return true
+
+        case (.invalid, .invalid):
+            return true
+
+        case (.error(let lhsValidationError), .error(let rhsValidationError)):
+            return lhsValidationError.localizedDescription == rhsValidationError.localizedDescription
+
+        case (.pending(let lhsValidationError), .pending(let rhsValidationError)):
+            return lhsValidationError?.localizedDescription == rhsValidationError?.localizedDescription
+
+        default:
+            return false
         }
     }
 

@@ -16,7 +16,7 @@ struct InputFieldSampleView: View {
         case notFilip
         case pinTooShort
 
-        var localizedDescription: String {
+        var errorDescription: String? {
             switch self {
             case .notFilip:
                 "Your name is not Filip"

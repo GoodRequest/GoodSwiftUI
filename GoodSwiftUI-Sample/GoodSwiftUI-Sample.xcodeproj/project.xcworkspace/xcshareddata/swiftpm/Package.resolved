@@ -1,5 +1,5 @@
 {
-  "originHash" : "b46379685bdd89847bab0c4df516d7df815c27bd0571dd4246fe2285ce20a8fc",
+  "originHash" : "5a3e29e9f54eef0b3f74b7a499302ccb3ef302ad2bf45cf1964b5ba7f8a6ff8c",
   "pins" : [
     {
       "identity" : "combineext",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/goodrequest/goodextensions-ios",
       "state" : {
-        "revision" : "dd6fe6484a87f4ccde73136d491b2339e2a3ab98",
-        "version" : "2.0.0"
+        "revision" : "d06f82844f041c6d8d1462753c9ce6bb069ec976",
+        "version" : "2.0.2"
       }
     },
     {

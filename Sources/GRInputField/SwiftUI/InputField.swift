@@ -318,6 +318,10 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
             return syncValidationState(uiViewState: .pending(error: validationError), context: context)
         }
 
+        guard newValidationState != previousValidationState else {
+            return
+        }
+
         changeValidationState(to: newValidationState, uiView: uiView, context: context)
     }
 
