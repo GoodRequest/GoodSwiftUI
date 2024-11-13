@@ -18,9 +18,7 @@ public struct InputFieldTraits: Sendable {
     /// If text field is secure, clear button is always disabled.
     public var clearButtonMode: UITextField.ViewMode = .whileEditing
     public var isSecureTextEntry: Bool = false
-    public var isHapticsAllowed: Bool = true
-    /// Regex limitation of the input string
-    public var textLimitation: String? = .none
+    public var hapticsAllowed: Bool = true
 
     public init(
         textContentType: UITextContentType? = nil,
@@ -31,8 +29,7 @@ public struct InputFieldTraits: Sendable {
         numpadReturnKeyTitle: String? = nil,
         clearButtonMode: UITextField.ViewMode = .whileEditing,
         isSecureTextEntry: Bool = false,
-        isHapticsAllowed: Bool = true,
-        textLimitation: String? = .none
+        hapticsAllowed: Bool = true
     ) {
         self.textContentType = textContentType
         self.autocapitalizationType = autocapitalizationType
@@ -42,8 +39,7 @@ public struct InputFieldTraits: Sendable {
         self.numpadReturnKeyTitle = numpadReturnKeyTitle
         self.clearButtonMode = clearButtonMode
         self.isSecureTextEntry = isSecureTextEntry
-        self.isHapticsAllowed = isHapticsAllowed
-        self.textLimitation = textLimitation
+        self.hapticsAllowed = hapticsAllowed
     }
 
     public static let `default` = InputFieldTraits()

@@ -96,7 +96,7 @@ public class InputFieldView: UIView {
 
     private let textField = UITextField().then {
         $0.textAlignment = .left
-        $0.setContentHuggingPriority(UILayoutPriority(0), for: .horizontal)
+        $0.setContentHuggingPriority(.defaultLow, for: .horizontal)
     }
 
     private let rightView = UIView().then {
@@ -122,7 +122,7 @@ public class InputFieldView: UIView {
 
     private weak var completionResponder: UIView?
     private var isSecureTextEntry = false
-    private var isHapticsAllowed = true
+    private var hapticsAllowed = true
 
     public var text: String {
         get {
@@ -291,7 +291,7 @@ private extension InputFieldView {
 
     func setupTraits(traits: InputFieldTraits) {
         isSecureTextEntry = traits.isSecureTextEntry
-        isHapticsAllowed = traits.isHapticsAllowed
+        hapticsAllowed = traits.hapticsAllowed
         setSecureTextEntryIfAllowed(isSecure: isSecureTextEntry)
 
         textField.textContentType = traits.textContentType
@@ -691,13 +691,13 @@ public extension InputFieldView {
 private extension InputFieldView {
 
     func hapticTap() {
-        if isHapticsAllowed {
+        if hapticsAllowed {
             GRHapticsManager.shared.playSelectionFeedback()
         }
     }
 
     func hapticError() {
-        if isHapticsAllowed {
+        if hapticsAllowed {
             GRHapticsManager.shared.playNotificationFeedback(.error)
         }
     }

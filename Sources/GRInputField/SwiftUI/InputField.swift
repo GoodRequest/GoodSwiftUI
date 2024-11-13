@@ -13,6 +13,11 @@ import SwiftUI
 
 public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
 
+    // MARK: - Typealiases
+
+    #warning("TODO: Update to RegexBuilder")
+    public typealias Regex = String
+
     // MARK: - Wrappers
 
     @Binding public var text: String
@@ -30,6 +35,7 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
     private var hasFormatting: Bool = false
 
     private var traits: InputFieldTraits
+    private var allowedInput: Regex?
     @ValidatorBuilder private var criteria: Supplier<Validator>
     private var focusAction: MainClosure?
     private var submitAction: MainClosure?
@@ -106,7 +112,7 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
         var cancellables = Set<AnyCancellable>()
         var focusAction: MainClosure?
         var submitAction: MainClosure?
-        var textLimitation: String?
+        var allowedInput: Regex?
 
         public override init() {}
 
@@ -129,13 +135,13 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
             shouldChangeCharactersIn range: NSRange,
             replacementString string: String
         ) -> Bool {
-            guard let textLimitation else { return true }
+            guard let allowedInput else { return true }
 
             if let text = textField.text, let textRange = Range(range, in: text) {
                 let updatedText = text.replacingCharacters(in: textRange, with: string)
 
                 do {
-                    let regex = try NSRegularExpression(pattern: textLimitation, options: [])
+                    let regex = try NSRegularExpression(pattern: allowedInput, options: [])
                     let range = NSRange(location: .zero, length: updatedText.utf16.count)
                     let matches = regex.matches(
                         in: updatedText.folding(options: .diacriticInsensitive, locale: nil),
@@ -145,7 +151,7 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
 
                     return !matches.isEmpty
                 } catch {
-                    debugPrint("Invalid regular expression: \(error.localizedDescription)")
+                    print("Invalid regular expression: \(error.localizedDescription)")
 
                     return false
                 }
@@ -164,8 +170,8 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
         let view = ValidableInputFieldView()
         let model = InputFieldView.Model(
             title: title,
-            leftView: getAnchorView(from: leftView()),
-            rightView: getAnchorView(from: rightView()),
+            leftView: makeSupplementaryView(from: leftView()),
+            rightView: makeSupplementaryView(from: rightView()),
             placeholder: placeholder,
             hint: hint,
             traits: traits
@@ -185,7 +191,7 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
 
         context.coordinator.focusAction = focusAction
         context.coordinator.submitAction = submitAction
-        context.coordinator.textLimitation = traits.textLimitation
+        context.coordinator.allowedInput = allowedInput
 
         let editingChangedCancellable = view.editingChangedPublisher
             .removeDuplicates()
@@ -229,10 +235,10 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
 
         uiView.setupCustomLeftView(
             leftImage: nil,
-            leftView: getAnchorView(from: leftView())
+            leftView: makeSupplementaryView(from: leftView())
         )
         uiView.setupCustomRightView(
-            rightView: getAnchorView(from: rightView())
+            rightView: makeSupplementaryView(from: rightView())
         )
 
         // Equality check to prevent unintended side effects
@@ -247,7 +253,7 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
         coordinator.cancellables.removeAll()
     }
 
-    private func getAnchorView<V: View>(from view: V) -> _UIHostingView<V>? {
+    private func makeSupplementaryView<V: View>(from view: V) -> _UIHostingView<V>? {
         guard !(view is EmptyView) else { return .none }
 
         return _UIHostingView(rootView: view)
@@ -400,8 +406,7 @@ public extension InputField {
         numpadReturnKeyTitle: String? = "Done",
         clearButtonMode: UITextField.ViewMode = .whileEditing,
         isSecureTextEntry: Bool = false,
-        isHapticsAllowed: Bool = true,
-        textLimitation: String? = .none
+        hapticsAllowed: Bool = true
     ) -> Self {
         var modifiedSelf = self
         modifiedSelf.traits = InputFieldTraits(
@@ -413,9 +418,15 @@ public extension InputField {
             numpadReturnKeyTitle: numpadReturnKeyTitle,
             clearButtonMode: clearButtonMode,
             isSecureTextEntry: isSecureTextEntry,
-            isHapticsAllowed: isHapticsAllowed,
-            textLimitation: textLimitation
+            hapticsAllowed: hapticsAllowed
         )
+        return modifiedSelf
+    }
+
+    func allowedInput(_ allowedInputRegex: Regex?) -> Self {
+        var modifiedSelf = self
+        modifiedSelf.allowedInput = allowedInputRegex
+
         return modifiedSelf
     }
 
