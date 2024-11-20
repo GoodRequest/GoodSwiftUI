@@ -122,7 +122,7 @@ public class InputFieldView: UIView {
 
     private weak var completionResponder: UIView?
     private var isSecureTextEntry = false
-    private var isHapticsAllowed = true
+    private var hapticsAllowed = true
 
     public var text: String {
         get {
@@ -291,7 +291,7 @@ private extension InputFieldView {
 
     func setupTraits(traits: InputFieldTraits) {
         isSecureTextEntry = traits.isSecureTextEntry
-        isHapticsAllowed = traits.isHapticsAllowed
+        hapticsAllowed = traits.hapticsAllowed
         setSecureTextEntryIfAllowed(isSecure: isSecureTextEntry)
 
         textField.textContentType = traits.textContentType
@@ -344,7 +344,7 @@ private extension InputFieldView {
             verticalStackView.addArrangedSubview($0)
         }
 
-        [leftContainerImageView, textField, rightView].forEach {
+        [leftContainerImageView, textField].forEach {
             horizontalStackView.addArrangedSubview($0)
         }
 
@@ -501,11 +501,14 @@ internal extension InputFieldView {
     func setupCustomRightView(rightView rightSubview: UIView?) {
         /// Right view
         if let rightSubview, !isSecureTextEntry {
+            horizontalStackView.addArrangedSubview(rightView)
             rightView.subviews.forEach { $0.removeFromSuperview() }
             rightView.addSubview(rightSubview)
 
             rightSubview.translatesAutoresizingMaskIntoConstraints = false
             rightSubview.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+            rightSubview.setContentCompressionResistancePriority(.required, for: .horizontal)
+
             NSLayoutConstraint.activate([
                 rightSubview.topAnchor.constraint(equalTo: rightView.topAnchor),
                 rightSubview.leadingAnchor.constraint(equalTo: rightView.leadingAnchor),
@@ -513,6 +516,7 @@ internal extension InputFieldView {
                 rightSubview.bottomAnchor.constraint(equalTo: rightView.bottomAnchor)
             ])
         } else if isSecureTextEntry {
+            horizontalStackView.addArrangedSubview(rightView)
             rightView.subviews.forEach { $0.removeFromSuperview() }
             rightView.addSubview(eyeButton)
 
@@ -687,13 +691,13 @@ public extension InputFieldView {
 private extension InputFieldView {
 
     func hapticTap() {
-        if isHapticsAllowed {
+        if hapticsAllowed {
             GRHapticsManager.shared.playSelectionFeedback()
         }
     }
 
     func hapticError() {
-        if isHapticsAllowed {
+        if hapticsAllowed {
             GRHapticsManager.shared.playNotificationFeedback(.error)
         }
     }

@@ -101,10 +101,11 @@ extension InputFieldSampleView {
 
     private var nameInputField: some View {
         // Text field
-        InputField(text: $name, title: "Name", placeholder: "Jožko")
+        InputField(text: $name, title: "Name", placeholder: "Jožko", hint: "Text is limited to 10 characters")
 
         // "Continue" keyboard action button
             .inputFieldTraits(returnKeyType: .continue)
+            .allowedInput("^.{0,10}$")
 
         // Validates name to be equal to "Filip", otherwise fails with custom error
             .validationCriteria {
