@@ -17,6 +17,7 @@
 		5D740EB829B0BE0200975B8C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D740EB729B0BE0200975B8C /* Assets.xcassets */; };
 		5D740EBB29B0BE0200975B8C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D740EB929B0BE0200975B8C /* LaunchScreen.storyboard */; };
 		5D740EC629B0BE7300975B8C /* GoodSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 5D740EC529B0BE7300975B8C /* GoodSwiftUI */; };
+		78062C8E2CEDD3D000281C04 /* GRButtonSampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78062C8D2CEDD3BE00281C04 /* GRButtonSampleView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		5D740EBA29B0BE0200975B8C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5D740EBC29B0BE0200975B8C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5D740EC329B0BE5F00975B8C /* GoodSwiftUI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = GoodSwiftUI; path = ..; sourceTree = "<group>"; };
+		78062C8D2CEDD3BE00281C04 /* GRButtonSampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GRButtonSampleView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 		3F9F28422A3AEC5200D92CA2 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				78062C8D2CEDD3BE00281C04 /* GRButtonSampleView.swift */,
 				09B493CC2C986F1400C66743 /* ReadableContentWidthView.swift */,
 				3F9F28432A3AEC6000D92CA2 /* SamplesListView.swift */,
 				3F9F28452A3AEC8B00D92CA2 /* GRAsyncImageSampleView.swift */,
@@ -185,6 +188,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78062C8E2CEDD3D000281C04 /* GRButtonSampleView.swift in Sources */,
 				09B493CD2C986F1800C66743 /* ReadableContentWidthView.swift in Sources */,
 				5D740EAD29B0BE0100975B8C /* AppDelegate.swift in Sources */,
 				09794E3A2C295F4600023CD1 /* InputFieldViewConfiguration.swift in Sources */,
