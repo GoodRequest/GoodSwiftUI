@@ -16,7 +16,7 @@ struct InputFieldSampleView: View {
         case notFilip
         case pinTooShort
 
-        var localizedDescription: String {
+        var errorDescription: String? {
             switch self {
             case .notFilip:
                 "Your name is not Filip"
@@ -154,6 +154,15 @@ extension InputFieldSampleView {
             placeholder: "0 %"
         )
         .inputFieldTraits(keyboardType: .numbersAndPunctuation)
+        .onSubmit {
+            print("Submit action")
+        }
+        .onResign {
+            print("Resign action")
+        }
+        .onEditingChanged {
+            print("Value changed")
+        }
     }
 
     private var customViewsInputField: some View {

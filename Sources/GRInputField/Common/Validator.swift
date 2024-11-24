@@ -11,7 +11,7 @@ import GoodStructs
 
 // MARK: - ValidatorBuilder
 
-@resultBuilder public struct ValidatorBuilder {
+@MainActor @resultBuilder public struct ValidatorBuilder {
 
     public static func buildBlock(_ components: CriteriaConvertible...) -> Validator {
         var criteria: [Criterion] = []
@@ -48,15 +48,15 @@ import GoodStructs
 
 // MARK: - Validator
 
-public struct Validator: CriteriaConvertible {
+@MainActor public struct Validator: CriteriaConvertible {
 
-    fileprivate var criteria: [Criterion] = []
+    internal var criteria: [Criterion] = []
 
-    @MainActor public func isValid(input: String?) -> Bool {
+    public func isValid(input: String?) -> Bool {
         validate(input: input).isNil
     }
 
-    @MainActor public func validate(input: String?) -> (any ValidationError)? {
+    public func validate(input: String?) -> (any ValidationError)? {
         let failedCriterion = criteria
             .map { (criterion: $0, result: $0.validate(input: input)) }
             .first { _, result in !result }
@@ -77,7 +77,7 @@ public struct Validator: CriteriaConvertible {
 
 // MARK: - Criterion
 
-public struct Criterion: Sendable, Then, CriteriaConvertible {
+@MainActor public struct Criterion: Sendable, Then, CriteriaConvertible {
 
     // MARK: - Variables
 
@@ -114,7 +114,7 @@ public struct Criterion: Sendable, Then, CriteriaConvertible {
 
 // MARK: - CriteriaConvertible
 
-public protocol CriteriaConvertible {
+@MainActor public protocol CriteriaConvertible {
 
     func asCriteria() -> [Criterion]
 
@@ -124,11 +124,11 @@ public protocol CriteriaConvertible {
 
 extension Criterion: Hashable {
 
-    public static func == (lhs: Criterion, rhs: Criterion) -> Bool {
+    nonisolated public static func == (lhs: Criterion, rhs: Criterion) -> Bool {
         lhs.hashValue == rhs.hashValue
     }
 
-    public func hash(into hasher: inout Hasher) {
+    nonisolated public func hash(into hasher: inout Hasher) {
         if predicate.isNotNil { hasher.combine(UUID()) }
         hasher.combine(regex)
     }

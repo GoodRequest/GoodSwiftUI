@@ -23,7 +23,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/goodrequest/goodextensions-ios", .upToNextMajor(from: "2.0.0"))
+        .package(url: "https://github.com/GoodRequest/GoodExtensions-iOS.git", .upToNextMajor(from: "2.0.2"))
     ],
     targets: [
         .target(

@@ -36,7 +36,7 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
 
     private var traits: InputFieldTraits
     private var allowedInput: Regex?
-    @ValidatorBuilder private var criteria: Supplier<Validator>
+    @ValidatorBuilder private var criteria: MainSupplier<Validator>
     private var focusAction: MainClosure?
     private var submitAction: MainClosure?
     private var resignAction: MainClosure?
@@ -58,14 +58,7 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
         self.placeholder = placeholder
         self.hint = hint
         self.traits = InputFieldTraits()
-
-        @ValidatorBuilder @Sendable func alwaysValidCriteria() -> Validator {
-            Criterion.alwaysValid
-        }
-
-        // closures cannot take @ValidationBuilder attribute, must be a function reference
-        self.criteria = alwaysValidCriteria
-
+        self.criteria = { Validator(criteria: [Criterion.alwaysValid]) }
         self.leftView = leftView
         self.rightView = rightView
     }
@@ -373,25 +366,25 @@ public extension InputField {
         return modifiedSelf
     }
 
-    func onResign(_ action: @escaping VoidClosure) -> Self {
+    func onResign(_ action: @escaping MainClosure) -> Self {
         var modifiedSelf = self
         modifiedSelf.resignAction = action
         return modifiedSelf
     }
 
-    func onSubmit(_ action: @escaping VoidClosure) -> Self {
+    func onSubmit(_ action: @escaping MainClosure) -> Self {
         var modifiedSelf = self
         modifiedSelf.submitAction = action
         return modifiedSelf
     }
 
-    func onEditingChanged(_ action: @escaping VoidClosure) -> Self {
+    func onEditingChanged(_ action: @escaping MainClosure) -> Self {
         var modifiedSelf = self
         modifiedSelf.editingChangedAction = action
         return modifiedSelf
     }
 
-    func validationCriteria(@ValidatorBuilder _ criteria: @escaping Supplier<Validator>) -> Self {
+    func validationCriteria(@ValidatorBuilder _ criteria: @escaping MainSupplier<Validator>) -> Self {
         var modifiedSelf = self
         modifiedSelf.criteria = criteria
         return modifiedSelf
@@ -426,7 +419,6 @@ public extension InputField {
     func allowedInput(_ allowedInputRegex: Regex?) -> Self {
         var modifiedSelf = self
         modifiedSelf.allowedInput = allowedInputRegex
-
         return modifiedSelf
     }
 

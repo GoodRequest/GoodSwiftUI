@@ -10,20 +10,16 @@ import GoodExtensions
 
 // MARK: - Validation errors
 
-public protocol ValidationError: Error, Equatable {
-
-    var localizedDescription: String { get }
-
-}
+public protocol ValidationError: LocalizedError {}
 
 public enum InternalValidationError: ValidationError {
 
     case alwaysError
     case required
     case mismatch
-    case external(String)
+    case external(MainSupplier<String>)
 
-    public var localizedDescription: String {
+    public var errorDescription: String? {
         switch self {
         case .alwaysError:
             "Error"
@@ -35,7 +31,9 @@ public enum InternalValidationError: ValidationError {
             "Elements do not match"
 
         case .external(let description):
-            description
+            MainActor.assumeIsolated {
+                description()
+            }
         }
     }
 
@@ -46,18 +44,18 @@ public enum InternalValidationError: ValidationError {
 public extension Criterion {
 
     /// Always succeeds
-    nonisolated static let alwaysValid = Criterion { _ in true }
+    static let alwaysValid = Criterion { _ in true }
 
     /// Always fails
-    nonisolated static let alwaysError = Criterion { _ in false }
+    static let alwaysError = Criterion { _ in false }
         .failWith(error: InternalValidationError.alwaysError)
 
     /// Accepts any input with length > 0, excluding leading/trailing whitespace
-    nonisolated static let nonEmpty = Criterion { !($0 ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+    static let nonEmpty = Criterion { !($0 ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
         .failWith(error: InternalValidationError.required)
 
     /// Accepts an input if it is equal with another input
-    nonisolated static func matches(_ other: String?) -> Criterion {
+    static func matches(_ other: String?) -> Criterion {
         Criterion { this in this == other }
             .failWith(error: InternalValidationError.mismatch)
     }
@@ -69,14 +67,14 @@ public extension Criterion {
     ///
     /// If input is empty, validation **succeeds** and input is deemed valid.
     /// If input is non-empty, validation continues by criterion specified as a parameter.
-    nonisolated static func acceptEmpty(_ criterion: Criterion) -> Criterion {
+    static func acceptEmpty(_ criterion: Criterion) -> Criterion {
         Criterion { Criterion.nonEmpty.validate(input: $0) ? criterion.validate(input: $0) : true }
             .failWith(error: criterion.error)
     }
 
-    nonisolated static func external(error: @autoclosure @escaping Supplier<(any Error)?>) -> Criterion {
+    static func external(error: @MainActor @escaping () -> (any LocalizedError)?) -> Criterion {
         Criterion { _ in error().isNil }
-            .failWith(error: InternalValidationError.external(error()?.localizedDescription ?? " "))
+            .failWith(error: InternalValidationError.external { error()?.localizedDescription ?? " " })
     }
 
 }
