@@ -81,7 +81,7 @@ import GoodStructs
 
     // MARK: - Variables
 
-    private(set) internal var error: any ValidationError = InternalValidationError.alwaysError
+    private(set) internal var error: any ValidationError = InternalValidationError.invalid
 
     // MARK: - Constants
 

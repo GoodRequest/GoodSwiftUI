@@ -68,7 +68,7 @@ public class ValidableInputFieldView: InputFieldView {
     /// Does not update the UI in any way.
     /// - Returns: `nil` when content is valid, otherwise validation error from failed criterion.
     public func validateSilently() -> (any ValidationError)? {
-        guard let validator = validator?() else { return InternalValidationError.alwaysError }
+        guard let validator = validator?() else { return InternalValidationError.invalid }
 
         return validator.validate(input: self.text)
     }
