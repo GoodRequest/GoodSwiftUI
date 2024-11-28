@@ -14,21 +14,21 @@ public protocol ValidationError: LocalizedError {}
 
 public enum InternalValidationError: ValidationError {
 
-    case alwaysError
+    case invalid
     case required
     case mismatch
     case external(MainSupplier<String>)
 
     public var errorDescription: String? {
         switch self {
-        case .alwaysError:
-            "Error"
+        case .invalid:
+            Bundle.main.localizedString(forKey: "invalid", value: "Invalid", table: "InternalValidationError")
 
         case .required:
-            "Required"
+            Bundle.main.localizedString(forKey: "required", value: "Required", table: "InternalValidationError")
 
         case .mismatch:
-            "Elements do not match"
+            Bundle.main.localizedString(forKey: "mismatch", value: "Mismatch", table: "InternalValidationError")
 
         case .external(let description):
             MainActor.assumeIsolated {
@@ -48,7 +48,7 @@ public extension Criterion {
 
     /// Always fails
     static let alwaysError = Criterion { _ in false }
-        .failWith(error: InternalValidationError.alwaysError)
+        .failWith(error: InternalValidationError.invalid)
 
     /// Accepts any input with length > 0, excluding leading/trailing whitespace
     static let nonEmpty = Criterion { !($0 ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
