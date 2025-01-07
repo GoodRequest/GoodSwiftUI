@@ -35,6 +35,12 @@ struct SamplesListView: View {
                 }
                 
                 NavigationLink {
+                    GRToggleSampleView()
+                } label: {
+                    Text("Toggles")
+				}
+
+                NavigationLink {
                     GRButtonSampleView()
                 } label: {
                     Text("Buttons")
