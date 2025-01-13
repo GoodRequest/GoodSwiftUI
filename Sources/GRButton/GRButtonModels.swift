@@ -46,10 +46,16 @@ public struct GRButtonIconModel {
     
     public let leftIcon: Image?
     public let rightIcon: Image?
+    public let mirrorIconSpace: Bool
     
-    public init(leftIcon: Image? = nil, rightIcon: Image? = nil) {
+    public init(
+        leftIcon: Image? = nil,
+        rightIcon: Image? = nil,
+        mirrorIconSpace: Bool = false
+    ) {
         self.leftIcon = leftIcon
         self.rightIcon = rightIcon
+        self.mirrorIconSpace = mirrorIconSpace
     }
     
 }

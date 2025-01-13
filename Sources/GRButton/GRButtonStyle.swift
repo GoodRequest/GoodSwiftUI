@@ -20,6 +20,21 @@ public struct GRButtonStyle: ButtonStyle {
     
     @Environment(\.isEnabled) var isEnabled
     
+    var isLeftIconMirroring: Bool {
+        if iconModel?.leftIcon == nil,
+           isLoading || iconModel?.rightIcon != nil {
+            return iconModel?.mirrorIconSpace ?? false
+        }
+        return false
+    }
+    
+    var isRightIconMirroring: Bool {
+        if iconModel?.rightIcon == nil, iconModel?.leftIcon != nil {
+            return iconModel?.mirrorIconSpace ?? false
+        }
+        return false
+    }
+    
     let appearance: GRButtonAppearanceModel
     let iconModel: GRButtonIconModel?
     let isLoading: Bool
@@ -43,7 +58,11 @@ public struct GRButtonStyle: ButtonStyle {
     
     public func makeBody(configuration: Configuration) -> some View {
         HStack(alignment: .center, spacing: size.frame.itemSpacing) {
-            icon(iconModel?.leftIcon)
+            if isLeftIconMirroring {
+                emptyIcon()
+            } else {
+                icon(iconModel?.leftIcon)
+            }
             
             configuration.label
                 .foregroundColor(isEnabled ? appearance.textColor : appearance.disabledTextColor)
@@ -54,7 +73,11 @@ public struct GRButtonStyle: ButtonStyle {
                     .progressViewStyle(CircularProgressViewStyle(tint: appearance.loadingTintColor))
                     .transition(.scale)
             } else {
-                icon(iconModel?.rightIcon)
+                if isRightIconMirroring {
+                    emptyIcon()
+                } else {
+                    icon(iconModel?.rightIcon)
+                }
             }
         }
         .padding(size.frame.edgeSpacing)
@@ -81,6 +104,12 @@ private extension GRButtonStyle {
             .scaledToFit()
             .frame(width: size.iconSize.width, height: size.iconSize.height)
             .foregroundColor(isEnabled ? appearance.iconTintColor : appearance.iconDisabledTintColor)
+    }
+    
+    func emptyIcon() -> some View {
+        Rectangle()
+            .frame(width: size.iconSize.width, height: size.iconSize.height)
+            .opacity(0)
     }
     
 }
