@@ -39,7 +39,14 @@ public struct GRButtonStyle: ButtonStyle {
     let iconModel: GRButtonIconModel?
     let isLoading: Bool
     let size: Size
-    
+
+    @ScaledMetric private var buttonHeight: CGFloat
+    @ScaledMetric private var buttonWidth: CGFloat
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    @ScaledMetric private var iconHeight: CGFloat
+    @ScaledMetric private var iconWidth: CGFloat
+
     // MARK: - Initialization
     
     public init(
@@ -52,6 +59,11 @@ public struct GRButtonStyle: ButtonStyle {
         self.iconModel = iconModel
         self.isLoading = isLoading
         self.size = size
+
+        self._buttonHeight = ScaledMetric(wrappedValue: size.frame.height)
+        self._buttonWidth = ScaledMetric(wrappedValue: size.frame.width ?? -1) // -1 means no width constraint
+        self._iconHeight = ScaledMetric(wrappedValue: size.iconSize.height)
+        self._iconWidth = ScaledMetric(wrappedValue: size.iconSize.width)
     }
     
     // MARK: - Content
@@ -66,7 +78,7 @@ public struct GRButtonStyle: ButtonStyle {
             
             configuration.label
                 .foregroundColor(isEnabled ? appearance.textColor : appearance.disabledTextColor)
-                .font(Font(isEnabled ? appearance.textFont : appearance.disabledTextFont))
+                .font(isEnabled ? appearance.textFont : appearance.disabledTextFont)
                 
             if isLoading {
                 ProgressView()
@@ -81,7 +93,8 @@ public struct GRButtonStyle: ButtonStyle {
             }
         }
         .padding(size.frame.edgeSpacing)
-        .frame(width: size.frame.width, height: size.frame.height)
+        .frame(width: buttonWidth > -1 ? buttonWidth : nil, height: buttonHeight)
+        .contentShape(Rectangle()) // To increase the touch area of the button
         .background(
             RoundedRectangle(cornerRadius: size.frame.cornerRadius)
                 .fill(isEnabled ? appearance.backgroundColor : appearance.disabledBackgroundColor)
@@ -102,13 +115,13 @@ private extension GRButtonStyle {
         icon?
             .resizable()
             .scaledToFit()
-            .frame(width: size.iconSize.width, height: size.iconSize.height)
+            .frame(width: iconWidth, height: iconHeight)
             .foregroundColor(isEnabled ? appearance.iconTintColor : appearance.iconDisabledTintColor)
     }
     
     func emptyIcon() -> some View {
         Rectangle()
-            .frame(width: size.iconSize.width, height: size.iconSize.height)
+            .frame(width: iconWidth, height: iconHeight)
             .opacity(0)
     }
     

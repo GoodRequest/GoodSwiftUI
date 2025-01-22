@@ -23,149 +23,161 @@ struct GRButtonSampleView: View {
     }
     
     @State var isLoading: Bool = false
-    
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
     var leftImage = Image(systemName: "person")
     var rightImage = Image(systemName: "arrow.right")
-    
+
+    var columns: [GridItem] {
+        return Array(repeating: .init(.flexible()), count: dynamicTypeSize.isAccessibilitySize ? 1 : 2)
+    }
+
+    var spacing: CGFloat {
+        return dynamicTypeSize.isAccessibilitySize ? 8 : 16
+    }
+
     var body: some View {
-        LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 2), spacing: 16) {
-            Button(Constants.textButtonTitle) { isLoading.toggle() }
-                .buttonStyle(GRButtonStyle(appearance: .secondary))
-            
-            Button(Constants.textButtonTitle) { isLoading.toggle() }
-                .buttonStyle(GRButtonStyle(appearance: .primary))
-            
-            Button(Constants.smallButtonTitle) { isLoading.toggle() }
-                .buttonStyle(
-                    GRButtonStyle(
-                        appearance: .secondary,
-                        iconModel: .init(leftIcon: leftImage, rightIcon: rightImage),
-                        size: .small
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: spacing) {
+                Button(Constants.textButtonTitle) { isLoading.toggle() }
+                    .buttonStyle(GRButtonStyle(appearance: .secondary))
+
+                Button(Constants.textButtonTitle) { isLoading.toggle() }
+                    .buttonStyle(GRButtonStyle(appearance: .primary))
+
+                Button(Constants.smallButtonTitle) { isLoading.toggle() }
+                    .buttonStyle(
+                        GRButtonStyle(
+                            appearance: .secondary,
+                            iconModel: .init(leftIcon: leftImage, rightIcon: rightImage),
+                            size: .small
+                        )
                     )
-                )
-            
-            Button(Constants.smallButtonTitle) { isLoading.toggle() }
-                .buttonStyle(
-                    GRButtonStyle(
-                        appearance: .primary,
-                        iconModel: .init(leftIcon: leftImage, rightIcon: rightImage),
-                        size: .small
+
+                Button(Constants.smallButtonTitle) { isLoading.toggle() }
+                    .buttonStyle(
+                        GRButtonStyle(
+                            appearance: .primary,
+                            iconModel: .init(leftIcon: leftImage, rightIcon: rightImage),
+                            size: .small
+                        )
                     )
-                )
-            
-            Button(Constants.mediumButtonTitle) { isLoading.toggle() }
-                .buttonStyle(
-                    GRButtonStyle(
-                        appearance: .secondary,
-                        iconModel: .init(leftIcon: leftImage, rightIcon: rightImage),
-                        size: .medium
+
+                Button(Constants.mediumButtonTitle) { isLoading.toggle() }
+                    .buttonStyle(
+                        GRButtonStyle(
+                            appearance: .secondary,
+                            iconModel: .init(leftIcon: leftImage, rightIcon: rightImage),
+                            size: .medium
+                        )
                     )
-                )
-            
-            Button(Constants.mediumButtonTitle) { isLoading.toggle() }
-                .buttonStyle(
-                    GRButtonStyle(
-                        appearance: .primary,
-                        iconModel: .init(leftIcon: leftImage, rightIcon: rightImage),
-                        size: .medium
+
+                Button(Constants.mediumButtonTitle) { isLoading.toggle() }
+                    .buttonStyle(
+                        GRButtonStyle(
+                            appearance: .primary,
+                            iconModel: .init(leftIcon: leftImage, rightIcon: rightImage),
+                            size: .medium
+                        )
                     )
-                )
-            
-            Button(Constants.largeButtonTitle) { isLoading.toggle() }
-                .buttonStyle(
-                    GRButtonStyle(
-                        appearance: .secondary,
-                        iconModel: .init(leftIcon: leftImage, rightIcon: nil),
-                        size: .large
+
+                Button(Constants.largeButtonTitle) { isLoading.toggle() }
+                    .buttonStyle(
+                        GRButtonStyle(
+                            appearance: .secondary,
+                            iconModel: .init(leftIcon: leftImage, rightIcon: nil),
+                            size: .large
+                        )
                     )
-                )
-            
-            Button(Constants.largeButtonTitle) { isLoading.toggle() }
-                .buttonStyle(
-                    GRButtonStyle(
-                        appearance: .primary,
-                        iconModel: .init(leftIcon: leftImage, rightIcon: nil),
-                        size: .large
+
+                Button(Constants.largeButtonTitle) { isLoading.toggle() }
+                    .buttonStyle(
+                        GRButtonStyle(
+                            appearance: .primary,
+                            iconModel: .init(leftIcon: leftImage, rightIcon: nil),
+                            size: .large
+                        )
                     )
-                )
-            
-            Button(Constants.loadingButtonTitle) { isLoading.toggle() }
-                .buttonStyle(
-                    GRButtonStyle(
-                        appearance: .secondary,
-                        isLoading: isLoading,
-                        size: .medium
+
+                Button(Constants.loadingButtonTitle) { isLoading.toggle() }
+                    .buttonStyle(
+                        GRButtonStyle(
+                            appearance: .secondary,
+                            isLoading: isLoading,
+                            size: .medium
+                        )
                     )
-                )
-            
-            Button(Constants.loadingButtonTitle) { isLoading.toggle() }
-                .buttonStyle(
-                    GRButtonStyle(
-                        appearance: .primary,
-                        isLoading: isLoading,
-                        size: .medium
+
+                Button(Constants.loadingButtonTitle) { isLoading.toggle() }
+                    .buttonStyle(
+                        GRButtonStyle(
+                            appearance: .primary,
+                            isLoading: isLoading,
+                            size: .medium
+                        )
                     )
-                )
-            
-            Button(action: {}, label: { EmptyView() })
-                .buttonStyle(
-                    GRButtonStyle(
-                        appearance: .secondary,
-                        iconModel: GRButtonIconModel(rightIcon: rightImage),
-                        isLoading: isLoading,
-                        size: .circleSmall
+
+                // O co sa tu jedna?
+                Button(action: {}, label: { EmptyView() })
+                    .buttonStyle(
+                        GRButtonStyle(
+                            appearance: .secondary,
+                            iconModel: GRButtonIconModel(rightIcon: rightImage),
+                            isLoading: isLoading,
+                            size: .circleSmall
+                        )
                     )
-                )
-            
-            Button(action: {}, label: { EmptyView() })
-                .buttonStyle(
-                    GRButtonStyle(
-                        appearance: .primary,
-                        iconModel: GRButtonIconModel(rightIcon: rightImage),
-                        isLoading: isLoading,
-                        size: .circleSmall
+
+                Button(action: {}, label: { EmptyView() })
+                    .buttonStyle(
+                        GRButtonStyle(
+                            appearance: .primary,
+                            iconModel: GRButtonIconModel(rightIcon: rightImage),
+                            isLoading: isLoading,
+                            size: .circleSmall
+                        )
                     )
-                )
-            
-            Button(action: {}, label: { EmptyView() })
-                .buttonStyle(
-                    GRButtonStyle(
-                        appearance: .secondary,
-                        iconModel: GRButtonIconModel(rightIcon: rightImage),
-                        isLoading: isLoading,
-                        size: .circleMedium
+
+                Button(action: {}, label: { EmptyView() })
+                    .buttonStyle(
+                        GRButtonStyle(
+                            appearance: .secondary,
+                            iconModel: GRButtonIconModel(rightIcon: rightImage),
+                            isLoading: isLoading,
+                            size: .circleMedium
+                        )
                     )
-                )
-            
-            Button(action: {}, label: { EmptyView() })
-                .buttonStyle(
-                    GRButtonStyle(
-                        appearance: .primary,
-                        iconModel: GRButtonIconModel(rightIcon: rightImage),
-                        isLoading: isLoading,
-                        size: .circleMedium
+
+                Button(action: {}, label: { EmptyView() })
+                    .buttonStyle(
+                        GRButtonStyle(
+                            appearance: .primary,
+                            iconModel: GRButtonIconModel(rightIcon: rightImage),
+                            isLoading: isLoading,
+                            size: .circleMedium
+                        )
                     )
-                )
-            
-            Button(action: {}, label: { EmptyView() })
-                .buttonStyle(
-                    GRButtonStyle(
-                        appearance: .secondary,
-                        iconModel: GRButtonIconModel(rightIcon: rightImage),
-                        isLoading: isLoading,
-                        size: .square
+
+                Button(action: {}, label: { EmptyView() })
+                    .buttonStyle(
+                        GRButtonStyle(
+                            appearance: .secondary,
+                            iconModel: GRButtonIconModel(rightIcon: rightImage),
+                            isLoading: isLoading,
+                            size: .square
+                        )
                     )
-                )
-            
-            Button(action: {}, label: { EmptyView() })
-                .buttonStyle(
-                    GRButtonStyle(
-                        appearance: .primary,
-                        iconModel: GRButtonIconModel(rightIcon: rightImage),
-                        isLoading: isLoading,
-                        size: .square
+
+                Button(action: {}, label: { EmptyView() })
+                    .buttonStyle(
+                        GRButtonStyle(
+                            appearance: .primary,
+                            iconModel: GRButtonIconModel(rightIcon: rightImage),
+                            isLoading: isLoading,
+                            size: .square
+                        )
                     )
-                )
+            }
         }
     }
     
@@ -183,8 +195,8 @@ extension GRButtonAppearanceModel {
         iconDisabledTintColor: .white.opacity(0.4),
         textColor: .white,
         disabledTextColor: .white.opacity(0.4),
-        textFont: .systemFont(ofSize: 17, weight: .medium),
-        disabledTextFont: .systemFont(ofSize: 17, weight: .medium)
+        textFont: .systemFont(ofSize: 21, weight: .medium),
+        disabledTextFont: .systemFont(ofSize: 21, weight: .medium)
     )
     
     static let secondary: GRButtonAppearanceModel = .init(
@@ -195,8 +207,8 @@ extension GRButtonAppearanceModel {
         iconDisabledTintColor: .black.opacity(0.4),
         textColor: .black,
         disabledTextColor: .black.opacity(0.4),
-        textFont: .systemFont(ofSize: 17, weight: .medium),
-        disabledTextFont: .systemFont(ofSize: 17, weight: .medium)
+        textFont: .systemFont(ofSize: 21, weight: .medium),
+        disabledTextFont: .systemFont(ofSize: 21, weight: .medium)
     )
     
 }

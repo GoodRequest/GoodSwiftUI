@@ -15,8 +15,8 @@ public struct GRButtonAppearanceModel {
     public let iconDisabledTintColor: Color
     public let textColor: Color
     public let disabledTextColor: Color
-    public let textFont: UIFont
-    public let disabledTextFont: UIFont
+    public let textFont: Font
+    public let disabledTextFont: Font
     
     public init(
         backgroundColor: Color,
@@ -26,8 +26,8 @@ public struct GRButtonAppearanceModel {
         iconDisabledTintColor: Color,
         textColor: Color,
         disabledTextColor: Color,
-        textFont: UIFont,
-        disabledTextFont: UIFont
+        textFont: Font,
+        disabledTextFont: Font
     ) {
         self.backgroundColor = backgroundColor
         self.disabledBackgroundColor = disabledBackgroundColor

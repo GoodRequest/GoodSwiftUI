@@ -45,6 +45,7 @@ struct SamplesListView: View {
                 } label: {
                     Text("Buttons")
                 }
+                .accessibilityIdentifier("buttonts-sample-link")
             }
             .navigationTitle("Samples")
         }
