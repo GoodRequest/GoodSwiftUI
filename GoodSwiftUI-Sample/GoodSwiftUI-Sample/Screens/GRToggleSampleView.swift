@@ -21,18 +21,18 @@ struct GRToggleSampleView: View {
                 Toggle(isOn: $isOn) { text("Toggle small") }
                     .toggleStyle(GRSwitchStyle(appearance: .default, size: .small))
                 
-                Toggle(isOn: $isOn) { text("Toggle disabled") }
+                Toggle(isOn: $isOn) { text("Toggle small disabled") }
                     .toggleStyle(GRSwitchStyle(appearance: .default, size: .small))
                     .disabled(true)
                 
                 Toggle(isOn: $isOn) { text("Check circle large") }
-                    .toggleStyle(GRToggleStyle(appearance: .default, style: .checkCircle, size: .large))
+                    .toggleStyle(GRToggleStyle(appearance: .default, style: .circularCheck, size: .large))
                 
                 Toggle(isOn: $isOn) { text("Check circle small") }
-                    .toggleStyle(GRToggleStyle(appearance: .default, style: .checkCircle, size: .small))
+                    .toggleStyle(GRToggleStyle(appearance: .default, style: .circularCheck, size: .small))
                 
-                Toggle(isOn: $isOn) { text("Check circle disabled") }
-                    .toggleStyle(GRToggleStyle(appearance: .default, style: .checkCircle, size: .small))
+                Toggle(isOn: $isOn) { text("Check circle small disabled") }
+                    .toggleStyle(GRToggleStyle(appearance: .default, style: .circularCheck, size: .small))
                     .disabled(true)
                 
                 Toggle(isOn: $isOn) { text("Radio box large") }
@@ -41,18 +41,18 @@ struct GRToggleSampleView: View {
                 Toggle(isOn: $isOn) { text("Radio box small") }
                     .toggleStyle(GRToggleStyle(appearance: .default, style: .radio, size: .small))
                 
-                Toggle(isOn: $isOn) { text("Radio box disabled") }
+                Toggle(isOn: $isOn) { text("Radio box small disabled") }
                     .toggleStyle(GRToggleStyle(appearance: .default, style: .radio, size: .small))
                     .disabled(true)
                 
-                Toggle(isOn: $isOn) { text("Check Box small") }
-                    .toggleStyle(GRToggleStyle(appearance: .default, style: .checkBox, size: .large))
+                Toggle(isOn: $isOn) { text("Check Box large") }
+                    .toggleStyle(GRToggleStyle(appearance: .default, style: .checkbox, size: .large))
                 
                 Toggle(isOn: $isOn) { text("Check Box small") }
-                    .toggleStyle(GRToggleStyle(appearance: .default, style: .checkBox, size: .small))
+                    .toggleStyle(GRToggleStyle(appearance: .default, style: .checkbox, size: .small))
                 
-                Toggle(isOn: $isOn) { text("Check Box small") }
-                    .toggleStyle(GRToggleStyle(appearance: .default, style: .checkBox, size: .small))
+                Toggle(isOn: $isOn) { text("Check Box small disabled") }
+                    .toggleStyle(GRToggleStyle(appearance: .default, style: .checkbox, size: .small))
                     .disabled(true)
                     
             }

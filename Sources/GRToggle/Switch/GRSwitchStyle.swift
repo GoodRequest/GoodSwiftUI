@@ -13,26 +13,34 @@ public struct GRSwitchStyle: ToggleStyle {
     
     public enum Size {
         
-        case small, large
+        case small, large, `default`
         
         enum C {
 
             static let defaultHeight = CGFloat(31)
             static let defaultWidth = CGFloat(49)
+            
+            static let smallHeight = CGFloat(28)
+            static let smallWidth = CGFloat(44)
+            
+            static let largeHeight = CGFloat(32)
+            static let largeWidth = CGFloat(51)
 
         }
         
         public var heightRatio: CGFloat {
             switch self {
-            case .small: CGFloat(28)/C.defaultHeight
-            case .large: CGFloat(32)/C.defaultHeight
+            case .small: C.smallHeight / C.defaultHeight
+            case .large: C.largeHeight / C.defaultHeight
+            case .default: C.defaultHeight / C.defaultHeight
             }
         }
 
         public var widthRatio: CGFloat {
             switch self {
-            case .small: CGFloat(44)/C.defaultWidth
-            case .large: CGFloat(51)/C.defaultWidth
+            case .small: C.smallWidth / C.defaultWidth
+            case .large: C.largeWidth / C.defaultWidth
+            case .default: C.defaultWidth / C.defaultWidth
             }
         }
         
@@ -87,7 +95,7 @@ public struct GRSwitchStyle: ToggleStyle {
 private extension GRSwitchStyle {
     
     func makeSwitch(_ configuration: Configuration) -> some View {
-        Toggle("", isOn: configuration.$isOn)
+        Toggle(isOn: configuration.$isOn) { configuration.label }
             .labelsHidden()
             .tint(appearance.activeBackgroundColor)
             .scaleEffect(x: size.widthRatio, y: size.heightRatio)

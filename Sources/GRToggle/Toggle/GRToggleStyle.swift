@@ -17,7 +17,20 @@ public struct GRToggleStyle: ToggleStyle {
         case large = 32
         
         var innerCircle: CGFloat { CGFloat(rawValue) / 2.5 }
-        var cornerRadius: CGFloat { 6 }
+        
+        var checkmarkHeight: CGFloat {
+            switch self {
+            case .large: 12
+            case .small: 8
+            }
+        }
+        
+        var checkmarkWidth: CGFloat {
+            switch self {
+            case .large: 16
+            case .small: 12
+            }
+        }
         
     }
     
@@ -33,7 +46,7 @@ public struct GRToggleStyle: ToggleStyle {
     
     public enum Style {
         
-        case radio, checkBox, checkCircle
+        case radio, checkbox, circularCheck
         
     }
     
@@ -45,12 +58,10 @@ public struct GRToggleStyle: ToggleStyle {
     var alignment: Alignment
     
     @Environment(\.isEnabled) private var isEnabled
-    
-    private var isLarge: Bool { size == .large }
-    private var isCheck: Bool { style == .checkCircle }
-    private var isBox: Bool { style == .checkBox }
-    private var isRadio: Bool { style == .radio }
-    private var checkedBorderColor: Color { isCheck ? .clear : appearance.tintColor }
+
+    private var checkedBorderColor: Color {
+        return style == .circularCheck ? .clear : appearance.tintColor
+    }
     
     // MARK: - Initialization
     
@@ -82,7 +93,6 @@ public struct GRToggleStyle: ToggleStyle {
         }
         .animation(.default, value: configuration.isOn)
         .contentShape(Rectangle())
-        .onTapGesture { configuration.isOn.toggle() }
     }
     
 }
@@ -92,39 +102,56 @@ public struct GRToggleStyle: ToggleStyle {
 private extension GRToggleStyle {
         
     func makeToggle(configuration: Configuration) -> some View {
-        ZStack{
+        Button {
+            configuration.isOn.toggle()
+        } label: {
             Group {
-                if isBox {
-                    RoundedRectangle(cornerRadius: size.cornerRadius)
-                        .foregroundColor(configuration.isOn ? appearance.tintColor : .clear)
-                    
-                    RoundedRectangle(cornerRadius: size.cornerRadius)
-                        .strokeBorder()
-                        .foregroundColor(configuration.isOn ? .clear : appearance.uncheckedBorderColor)
+                if style == .checkbox {
+                    boxToggle(configuration)
                 } else {
-                    Circle()
-                        .foregroundColor(configuration.isOn ? appearance.checkedBackgroundColor : .clear)
-                    
-                    Circle()
-                        .strokeBorder()
-                        .foregroundColor(configuration.isOn ? checkedBorderColor : appearance.uncheckedBorderColor)
-                    
-                    Circle()
-                        .foregroundColor(configuration.$isOn.wrappedValue ? appearance.tintColor : .clear)
-                        .frame(maxWidth: isCheck ? .none : size.innerCircle, maxHeight: isCheck ? .none : size.innerCircle)
+                    circleToggle(configuration)
                 }
             }
-            .opacity(isEnabled ? 1 : 0.32)
-
-            if !isRadio && configuration.isOn {
-                appearance.checkmarkImage?
-                    .resizable()
-                    .frame(width: isLarge ? 16 : 12, height: isLarge ? 12 : 8)
-                    .foregroundColor(appearance.checkmarkImageTintColor)
+            .overlay {
+                if style != .radio && configuration.isOn {
+                    appearance.checkmarkImage?
+                        .resizable()
+                        .frame(width: size.checkmarkWidth, height: size.checkmarkHeight)
+                        .foregroundColor(appearance.checkmarkImageTintColor)
+                }
             }
+            .opacity(isEnabled ? 1 : appearance.disabledOpacity)
         }
         .frame(width: CGFloat(size.rawValue), height: CGFloat(size.rawValue))
-        .contentShape(Circle())
+    }
+    
+    func boxToggle(_ configuration: Configuration) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: appearance.cornerRadius)
+                .foregroundColor(configuration.isOn ? appearance.tintColor : appearance.uncheckedBackgroundColor)
+            
+            RoundedRectangle(cornerRadius: appearance.cornerRadius)
+                .strokeBorder()
+                .foregroundColor(configuration.isOn ? .clear : appearance.uncheckedBorderColor)
+        }
+    }
+    
+    func circleToggle(_ configuration: Configuration) -> some View {
+        ZStack {
+            Circle()
+                .foregroundColor(configuration.isOn ? appearance.checkedBackgroundColor : appearance.uncheckedBackgroundColor)
+            
+            Circle()
+                .strokeBorder()
+                .foregroundColor(configuration.isOn ? checkedBorderColor : appearance.uncheckedBorderColor)
+            
+            Circle()
+                .foregroundColor(configuration.$isOn.wrappedValue ? appearance.tintColor : appearance.uncheckedBackgroundColor)
+                .frame(
+                    maxWidth: style == .circularCheck ? .none : size.innerCircle,
+                    maxHeight: style == .circularCheck ? .none : size.innerCircle
+                )
+        }
     }
     
 }
