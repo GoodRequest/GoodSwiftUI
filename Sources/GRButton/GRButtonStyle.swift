@@ -38,10 +38,12 @@ public struct GRButtonStyle: ButtonStyle {
     let appearance: GRButtonAppearanceModel
     let iconModel: GRButtonIconModel?
     let isLoading: Bool
-    let size: Size
+    let size: GRButtonFrameModel
 
-    @ScaledMetric private var buttonHeight: CGFloat
-    @ScaledMetric private var buttonWidth: CGFloat
+    @ScaledMetric private var buttonMinHeight: CGFloat
+    @ScaledMetric private var buttonMinWidth: CGFloat
+    @ScaledMetric private var buttonMaxHeight: CGFloat
+    @ScaledMetric private var buttonMaxWidth: CGFloat
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @ScaledMetric private var iconHeight: CGFloat
@@ -53,15 +55,17 @@ public struct GRButtonStyle: ButtonStyle {
         appearance: GRButtonAppearanceModel,
         iconModel: GRButtonIconModel? = nil,
         isLoading: Bool = false,
-        size: Size = .medium
+        size: GRButtonFrameModel = .medium()
     ) {
         self.appearance = appearance
         self.iconModel = iconModel
         self.isLoading = isLoading
         self.size = size
 
-        self._buttonHeight = ScaledMetric(wrappedValue: size.frame.height)
-        self._buttonWidth = ScaledMetric(wrappedValue: size.frame.width ?? -1) // -1 means no width constraint
+        self._buttonMinHeight = ScaledMetric(wrappedValue: size.minHeight)
+        self._buttonMinWidth = ScaledMetric(wrappedValue: size.minWidth ?? -1) // -1 means no width constraint
+        self._buttonMaxHeight = ScaledMetric(wrappedValue: size.maxHeight ?? -1) // -1 means no width constraint
+        self._buttonMaxWidth = ScaledMetric(wrappedValue: size.maxWidht ?? -1) // -1 means no width constraint
         self._iconHeight = ScaledMetric(wrappedValue: size.iconSize.height)
         self._iconWidth = ScaledMetric(wrappedValue: size.iconSize.width)
     }
@@ -69,7 +73,7 @@ public struct GRButtonStyle: ButtonStyle {
     // MARK: - Content
     
     public func makeBody(configuration: Configuration) -> some View {
-        HStack(alignment: .center, spacing: size.frame.itemSpacing) {
+        HStack(alignment: .center, spacing: size.itemSpacing) {
             if isLeftIconMirroring {
                 emptyIcon()
             } else {
@@ -79,7 +83,7 @@ public struct GRButtonStyle: ButtonStyle {
             configuration.label
                 .foregroundColor(isEnabled ? appearance.textColor : appearance.disabledTextColor)
                 .font(isEnabled ? appearance.textFont : appearance.disabledTextFont)
-                
+
             if isLoading {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle(tint: appearance.loadingTintColor))
@@ -92,11 +96,17 @@ public struct GRButtonStyle: ButtonStyle {
                 }
             }
         }
-        .padding(size.frame.edgeSpacing)
-        .frame(width: buttonWidth > -1 ? buttonWidth : nil, height: buttonHeight)
+        .padding(size.edgeSpacing)
+        .frame(
+            minWidth: buttonMinWidth > -1 ? buttonMinWidth : nil,
+            maxWidth: buttonMaxWidth > -1 ? buttonMaxWidth : nil,
+            minHeight: buttonMinHeight,
+            maxHeight: buttonMaxHeight > -1 ? buttonMaxHeight : nil
+        )
+        .frame(width: nil) // When widht is not set to nil, text sometimes gets clipped
         .contentShape(Rectangle()) // To increase the touch area of the button
         .background(
-            RoundedRectangle(cornerRadius: size.frame.cornerRadius)
+            RoundedRectangle(cornerRadius: size.cornerRadius)
                 .fill(isEnabled ? appearance.backgroundColor : appearance.disabledBackgroundColor)
         )
         .scaleEffect(configuration.isPressed ? C.minimalScale : 1)

@@ -62,27 +62,33 @@ public struct GRButtonIconModel {
 
 public struct GRButtonFrameModel {
     
-    public let height: CGFloat
-    public let width: CGFloat?
+    public let minHeight: CGFloat
+    public let maxHeight: CGFloat?
+    public let minWidth: CGFloat?
+    public let maxWidht: CGFloat?
     public let iconSize: CGSize
     public let edgeSpacing: EdgeInsets
     public let itemSpacing: CGFloat
     public let cornerRadius: CGFloat
-    
+
     public init(
-        height: CGFloat,
-        width: CGFloat? = nil,
+        minHeight: CGFloat,
+        maxHeight: CGFloat? = nil,
+        minWidth: CGFloat? = nil,
+        maxWidth: CGFloat? = nil,
         iconSize: CGSize,
         edgeSpacing: EdgeInsets,
         itemSpacing: CGFloat,
         cornerRadius: CGFloat
     ) {
-        self.height = height
-        self.width = width
+        self.minHeight = minHeight
+        self.maxHeight = maxHeight
+        self.minWidth = minWidth
+        self.maxWidht = maxWidth
         self.iconSize = iconSize
         self.edgeSpacing = edgeSpacing
         self.itemSpacing = itemSpacing
         self.cornerRadius = cornerRadius
     }
-    
+
 }

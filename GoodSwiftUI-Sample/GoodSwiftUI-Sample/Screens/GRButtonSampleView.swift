@@ -16,7 +16,7 @@ struct GRButtonSampleView: View {
         static let textButtonTitle = "Text"
         static let smallButtonTitle = "Small"
         static let mediumButtonTitle = "Medium"
-        static let largeButtonTitle = "Large"
+        static let largeButtonTitle = "Large button title"
         static let disabledButtonTitle = "Disabled"
         static let loadingButtonTitle = "Loading"
         
@@ -50,7 +50,7 @@ struct GRButtonSampleView: View {
                         GRButtonStyle(
                             appearance: .secondary,
                             iconModel: .init(leftIcon: leftImage, rightIcon: rightImage),
-                            size: .small
+                            size: .small(stretch: false)
                         )
                     )
 
@@ -59,7 +59,7 @@ struct GRButtonSampleView: View {
                         GRButtonStyle(
                             appearance: .primary,
                             iconModel: .init(leftIcon: leftImage, rightIcon: rightImage),
-                            size: .small
+                            size: .small(stretch: false)
                         )
                     )
 
@@ -68,7 +68,7 @@ struct GRButtonSampleView: View {
                         GRButtonStyle(
                             appearance: .secondary,
                             iconModel: .init(leftIcon: leftImage, rightIcon: rightImage),
-                            size: .medium
+                            size: .medium(stretch: false)
                         )
                     )
 
@@ -77,7 +77,7 @@ struct GRButtonSampleView: View {
                         GRButtonStyle(
                             appearance: .primary,
                             iconModel: .init(leftIcon: leftImage, rightIcon: rightImage),
-                            size: .medium
+                            size: .medium(stretch: false)
                         )
                     )
 
@@ -86,7 +86,7 @@ struct GRButtonSampleView: View {
                         GRButtonStyle(
                             appearance: .secondary,
                             iconModel: .init(leftIcon: leftImage, rightIcon: nil),
-                            size: .large
+                            size: .large(stretch: false)
                         )
                     )
 
@@ -95,7 +95,7 @@ struct GRButtonSampleView: View {
                         GRButtonStyle(
                             appearance: .primary,
                             iconModel: .init(leftIcon: leftImage, rightIcon: nil),
-                            size: .large
+                            size: .large(stretch: false)
                         )
                     )
 
@@ -104,7 +104,7 @@ struct GRButtonSampleView: View {
                         GRButtonStyle(
                             appearance: .secondary,
                             isLoading: isLoading,
-                            size: .medium
+                            size: .medium(stretch: false)
                         )
                     )
 
@@ -113,7 +113,7 @@ struct GRButtonSampleView: View {
                         GRButtonStyle(
                             appearance: .primary,
                             isLoading: isLoading,
-                            size: .medium
+                            size: .medium(stretch: false)
                         )
                     )
 
@@ -124,7 +124,7 @@ struct GRButtonSampleView: View {
                             appearance: .secondary,
                             iconModel: GRButtonIconModel(rightIcon: rightImage),
                             isLoading: isLoading,
-                            size: .circleSmall
+                            size: .circleSmall()
                         )
                     )
 
@@ -134,7 +134,7 @@ struct GRButtonSampleView: View {
                             appearance: .primary,
                             iconModel: GRButtonIconModel(rightIcon: rightImage),
                             isLoading: isLoading,
-                            size: .circleSmall
+                            size: .circleSmall()
                         )
                     )
 
@@ -144,7 +144,7 @@ struct GRButtonSampleView: View {
                             appearance: .secondary,
                             iconModel: GRButtonIconModel(rightIcon: rightImage),
                             isLoading: isLoading,
-                            size: .circleMedium
+                            size: .circleMedium()
                         )
                     )
 
@@ -154,7 +154,7 @@ struct GRButtonSampleView: View {
                             appearance: .primary,
                             iconModel: GRButtonIconModel(rightIcon: rightImage),
                             isLoading: isLoading,
-                            size: .circleMedium
+                            size: .circleMedium()
                         )
                     )
 
@@ -164,7 +164,7 @@ struct GRButtonSampleView: View {
                             appearance: .secondary,
                             iconModel: GRButtonIconModel(rightIcon: rightImage),
                             isLoading: isLoading,
-                            size: .square
+                            size: .square()
                         )
                     )
 
@@ -174,7 +174,7 @@ struct GRButtonSampleView: View {
                             appearance: .primary,
                             iconModel: GRButtonIconModel(rightIcon: rightImage),
                             isLoading: isLoading,
-                            size: .square
+                            size: .square()
                         )
                     )
             }
