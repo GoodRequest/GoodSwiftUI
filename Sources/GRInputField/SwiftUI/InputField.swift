@@ -41,6 +41,10 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
     private var submitAction: MainClosure?
     private var resignAction: MainClosure?
     private var editingChangedAction: MainClosure?
+    
+    private var accessibilityLabel: String?
+    private var accessibilityValue: String?
+    private var accessibilityHint: String?
 
     // MARK: - Initialization
 
@@ -61,6 +65,10 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
         self.criteria = { Validator(criteria: [Criterion.alwaysValid]) }
         self.leftView = leftView
         self.rightView = rightView
+        
+        self.accessibilityLabel = self.title
+        self.accessibilityValue = self.text
+        self.accessibilityHint = self.hint
     }
 
     @available(iOS 15.0, *)
@@ -240,6 +248,7 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
         }
 
         updateValidationState(uiView: uiView, context: context)
+        updateAccessibility(uiView)
     }
 
     public static func dismantleUIView(_ uiView: ValidableInputFieldView, coordinator: Coordinator) {
@@ -355,7 +364,15 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
         // (set)self.text = store formatted value back to storage
         self.text = formatted
     }
-
+    
+    // MARK: - Accessibility
+    
+    func updateAccessibility(_ uiView: ValidableInputFieldView) {
+        uiView.accessibilityLabel = accessibilityLabel
+        uiView.accessibilityHint = accessibilityHint
+        uiView.accessibilityValue = accessibilityValue
+    }
+    
 }
 
 // MARK: - Public modifiers
@@ -434,6 +451,30 @@ public extension InputField {
         return modifiedSelf
     }
 
+}
+
+// MARK: - Accessibility
+
+public extension InputField {
+    
+    func overrideAccessibilityLabel(_ label: String) -> Self {
+        var modifiedSelf = self
+        modifiedSelf.accessibilityLabel = label
+        return modifiedSelf
+    }
+    
+    func overrideAccessibilityHint(_ hint: String) -> Self {
+        var modifiedSelf = self
+        modifiedSelf.accessibilityHint = hint
+        return modifiedSelf
+    }
+    
+    func overrideAccessibilityValue(_ value: String) -> Self {
+        var modifiedSelf = self
+        modifiedSelf.accessibilityValue = value
+        return modifiedSelf
+    }
+    
 }
 
 // MARK: - View focus extension
