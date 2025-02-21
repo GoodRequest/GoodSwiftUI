@@ -45,6 +45,8 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
     private var accessibilityLabel: String?
     private var accessibilityValue: String?
     private var accessibilityHint: String?
+    private var showPasswordAccessibilityLabel: String?
+    private var hidePasswordAccessibilityLabel: String?
 
     // MARK: - Initialization
 
@@ -371,6 +373,8 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
         uiView.accessibilityLabel = accessibilityLabel
         uiView.accessibilityHint = accessibilityHint
         uiView.accessibilityValue = accessibilityValue
+        uiView.showPasswordAccessibilityLabel = showPasswordAccessibilityLabel
+        uiView.hidePasswordAccessibilityLabel = hidePasswordAccessibilityLabel
     }
     
 }
@@ -457,21 +461,28 @@ public extension InputField {
 
 public extension InputField {
     
-    func overrideAccessibilityLabel(_ label: String) -> Self {
+    func setAccessibilityLabel(_ label: String) -> Self {
         var modifiedSelf = self
         modifiedSelf.accessibilityLabel = label
         return modifiedSelf
     }
     
-    func overrideAccessibilityHint(_ hint: String) -> Self {
+    func setAccessibilityHint(_ hint: String) -> Self {
         var modifiedSelf = self
         modifiedSelf.accessibilityHint = hint
         return modifiedSelf
     }
     
-    func overrideAccessibilityValue(_ value: String) -> Self {
+    func setAccessibilityValue(_ value: String) -> Self {
         var modifiedSelf = self
         modifiedSelf.accessibilityValue = value
+        return modifiedSelf
+    }
+    
+    func setEyeButtonAccessibilityLabel(showLabel: String, hideLabel: String) -> Self {
+        var modifiedSelf = self
+        modifiedSelf.showPasswordAccessibilityLabel = showLabel
+        modifiedSelf.hidePasswordAccessibilityLabel = hideLabel
         return modifiedSelf
     }
     

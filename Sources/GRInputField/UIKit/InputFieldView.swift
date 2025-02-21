@@ -109,7 +109,6 @@ public class InputFieldView: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        $0.isAccessibilityElement = false
     }
 
     private let lineView = UIView().then {
@@ -135,6 +134,7 @@ public class InputFieldView: UIView {
         set {
             textField.text = newValue
             editingChangedSubject.send(newValue)
+            accessibilityValue = newValue
         }
     }
 
@@ -188,9 +188,30 @@ public class InputFieldView: UIView {
     
     public override var accessibilityValue: String? {
         get {
-            textField.accessibilityValue
+            if isSecureTextEntry {
+                return textField.isSecureTextEntry ? textField.accessibilityValue : text
+            } else {
+                return textField.accessibilityValue
+            }
         } set {
+            guard !isSecureTextEntry else { return }
+            
             textField.accessibilityValue = newValue
+        }
+    }
+    
+    public var showPasswordAccessibilityLabel: String? {
+        didSet {
+            guard textField.isSecureTextEntry else { return }
+            
+            eyeButton.accessibilityLabel = showPasswordAccessibilityLabel
+        }
+    }
+    public var hidePasswordAccessibilityLabel: String? {
+        didSet {
+            guard !textField.isSecureTextEntry else { return }
+            
+            eyeButton.accessibilityLabel = hidePasswordAccessibilityLabel
         }
     }
 
@@ -442,6 +463,9 @@ private extension InputFieldView {
         eyeButton.isHidden = false
         eyeButton.setImage(eyeImage, for: .normal)
         textField.isSecureTextEntry = isSecure
+        eyeButton.accessibilityLabel = isSecure
+            ? showPasswordAccessibilityLabel
+            : hidePasswordAccessibilityLabel
     }
 
     func trimWhitespaceIfAllowed() {

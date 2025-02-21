@@ -106,8 +106,8 @@ extension InputFieldSampleView {
     private var nameInputField: some View {
         // Text field
         InputField(text: $name, title: "Name", placeholder: "Jožko", hint: "Text is limited to 10 characters")
-        // Override of default accessibility
-            .overrideAccessibilityLabel("Fill the name")
+        // Override of default accessibility label
+            .setAccessibilityLabel("Fill the name")
 
         // "Continue" keyboard action button
             .inputFieldTraits(returnKeyType: .continue)
@@ -145,6 +145,9 @@ extension InputFieldSampleView {
                 numpadReturnKeyTitle: "Done",
                 isSecureTextEntry: true
             )
+        
+        // Setting accessibility labels for eye Button (secureField)
+            .setEyeButtonAccessibilityLabel(showLabel: "Show PIN", hideLabel: "Hide PIN")
 
         // Custom validation criteria closure
             .validationCriteria {
