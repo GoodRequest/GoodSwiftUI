@@ -42,6 +42,9 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
     private var resignAction: MainClosure?
     private var editingChangedAction: MainClosure?
 
+    /// Change appearance with `.inputFieldStyle()` modifier
+    private var customAppearance: InputFieldAppearance?
+
     // MARK: - Initialization
 
     public init(
@@ -170,7 +173,7 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
             traits: traits
         )
 
-        view.setup(with: model)
+        view.setup(with: model, customAppearance: customAppearance)
         view.attachTextFieldDelegate(context.coordinator)
 
         view.setValidationCriteria(criteria)
@@ -387,6 +390,12 @@ public extension InputField {
     func validationCriteria(@ValidatorBuilder _ criteria: @escaping MainSupplier<Validator>) -> Self {
         var modifiedSelf = self
         modifiedSelf.criteria = criteria
+        return modifiedSelf
+    }
+
+    func inputFieldStyle(_ appearance: InputFieldAppearance) -> Self {
+        var modifiedSelf = self
+        modifiedSelf.customAppearance = appearance
         return modifiedSelf
     }
 

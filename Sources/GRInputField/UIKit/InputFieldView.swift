@@ -142,8 +142,9 @@ public class InputFieldView: UIView {
         }
     }
 
+    /// Appearance can be set globally using `configureAppearance()` by modifying the `defaultAppearance`,
+    /// or locally by sending an appearance in `setup(with: Model, customAppearance: InputFieldAppearance?)`.
     open var standardAppearance: InputFieldAppearance = defaultAppearance
-
     public static var defaultAppearance: InputFieldAppearance = .default
 
     // MARK: - Combine
@@ -563,7 +564,12 @@ public extension InputFieldView {
 
     var isSelected: Bool { textField.isSelected }
 
-    func setup(with model: Model) {
+    func setup(with model: Model, customAppearance: InputFieldAppearance? = nil) {
+        if let customAppearance {
+            standardAppearance = customAppearance
+            setupAppearance()
+        }
+
         /// Traits
         setupTraits(traits: model.traits ?? .default)
         setupToolbarIfNeeded(traits: model.traits ?? .default)
