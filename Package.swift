@@ -11,7 +11,7 @@ let package = Package(
     products: [
         .library(
             name: "GoodSwiftUI",
-            targets: ["GoodSwiftUI", "GRAsyncImage", "GRInputField", "GRButton"]
+            targets: ["GoodSwiftUI", "GRAsyncImage", "GRInputField", "GRToggle", "GRButton"]
         ),
         .library(
             name: "GRAsyncImage",
@@ -20,6 +20,10 @@ let package = Package(
         .library(
             name: "GRInputField",
             targets: ["GRInputField"]
+        ),
+        .library(
+            name: "GRToggle",
+            targets: ["GRToggle"]
         ),
         .library(
             name: "GRButton",
@@ -51,8 +55,17 @@ let package = Package(
             swiftSettings: [.swiftLanguageMode(.v6)]
         ),
         .target(
+            name: "GRToggle",
+            dependencies: [
+                .product(name: "GoodExtensions", package: "GoodExtensions-iOS"),
+            ],
+            swiftSettings: [.swiftLanguageMode(.v6)]
+        ),
+        .target(
             name: "GRButton",
-            dependencies: [.product(name: "GoodExtensions", package: "GoodExtensions-iOS")],
+            dependencies: [
+                .product(name: "GoodExtensions", package: "GoodExtensions-iOS"),
+            ],
             swiftSettings: [.swiftLanguageMode(.v6)]
         ),
         .testTarget(
