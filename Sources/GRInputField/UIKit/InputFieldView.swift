@@ -169,7 +169,15 @@ public class InputFieldView: UIView {
     private(set) public lazy var editingChangedPublisher = editingChangedSubject.eraseToAnyPublisher()
     
     // MARK: - Accessibility
-    
+
+    public override var accessibilityIdentifier: String? {
+        get {
+            textField.accessibilityIdentifier
+        } set {
+            textField.accessibilityIdentifier = newValue
+        }
+    }
+
     public override var accessibilityLabel: String? {
         get {
             textField.accessibilityLabel
