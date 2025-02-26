@@ -169,7 +169,15 @@ public class InputFieldView: UIView {
     private(set) public lazy var editingChangedPublisher = editingChangedSubject.eraseToAnyPublisher()
     
     // MARK: - Accessibility
-    
+
+    public override var accessibilityIdentifier: String? {
+        get {
+            textField.accessibilityIdentifier
+        } set {
+            textField.accessibilityIdentifier = newValue
+        }
+    }
+
     public override var accessibilityLabel: String? {
         get {
             textField.accessibilityLabel
@@ -466,6 +474,9 @@ private extension InputFieldView {
         eyeButton.accessibilityLabel = isSecure
             ? showPasswordAccessibilityLabel
             : hidePasswordAccessibilityLabel
+        eyeButton.accessibilityIdentifier = isSecure
+            ? "show"
+            : "hide"
     }
 
     func trimWhitespaceIfAllowed() {
@@ -773,16 +784,3 @@ private extension InputFieldView {
     }
 
 }
-
-// MARK: - Accessiblity
-//
-//private extension InputFieldView {
-//    
-//    func accessibilityAnnounceFailure {
-//        guard let message else { return }
-//        
-//        DispatchQueue.main.async {
-//        }
-//    }
-//    
-//}

@@ -41,7 +41,8 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
     private var submitAction: MainClosure?
     private var resignAction: MainClosure?
     private var editingChangedAction: MainClosure?
-    
+
+    private var accessibilityIdentifier: String?
     private var accessibilityLabel: String?
     private var accessibilityValue: String?
     private var accessibilityHint: String?
@@ -67,7 +68,8 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
         self.criteria = { Validator(criteria: [Criterion.alwaysValid]) }
         self.leftView = leftView
         self.rightView = rightView
-        
+
+        self.accessibilityIdentifier = self.title
         self.accessibilityLabel = self.title
         self.accessibilityValue = self.text
         self.accessibilityHint = self.hint
@@ -370,6 +372,7 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
     // MARK: - Accessibility
     
     func updateAccessibility(_ uiView: ValidableInputFieldView) {
+        uiView.accessibilityIdentifier = accessibilityIdentifier
         uiView.accessibilityLabel = accessibilityLabel
         uiView.accessibilityHint = accessibilityHint
         uiView.accessibilityValue = accessibilityValue
@@ -460,7 +463,13 @@ public extension InputField {
 // MARK: - Accessibility
 
 public extension InputField {
-    
+
+    func setAccessibilityIdentifier(_ identifier: String) -> Self {
+        var modifiedSelf = self
+        modifiedSelf.accessibilityIdentifier = identifier
+        return modifiedSelf
+    }
+
     func setAccessibilityLabel(_ label: String) -> Self {
         var modifiedSelf = self
         modifiedSelf.accessibilityLabel = label
