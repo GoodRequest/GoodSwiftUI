@@ -74,22 +74,25 @@ final class InputFieldViewUITests: XCTestCase {
              - Automatic text hiding on focus loss
          */
         let randomPin = Int.random(in: 100000..<999999)
-        app.slowlyTypeText(String(randomPin))
+        let randomPinString = String(randomPin)
+        let randomPinSpaced = "\(randomPinString.prefix(3)) \(randomPinString.suffix(3))"
+        app.slowlyTypeText(randomPinString)
         app.toolbars.buttons["Done"].tap()
 
         let pinTextField = app.otherElements["pinTextField"]
         let pinTextFieldSecureField = pinTextField.secureTextFields.element
 
-        XCTAssertEqual(pinTextFieldSecureField.value as? String, "••••••")
+        // 7 dots - 6 numbers + formatter space in between
+        XCTAssertEqual(pinTextFieldSecureField.value as? String, "•••••••")
         XCTAssertTrue(app.staticTexts["At least 6 numbers"].exists)
 
         pinTextField.buttons["show"].tap()
         let pinTextFieldStandardField = pinTextField.textFields.element
-        XCTAssertEqual(pinTextFieldStandardField.value as? String, String(randomPin))
+        XCTAssertEqual(pinTextFieldStandardField.value as? String, randomPinSpaced)
 
         app.toolbars.buttons["Done"].tap()
         XCTAssertFalse(pinTextFieldStandardField.exists)
-        XCTAssertEqual(pinTextFieldSecureField.value as? String, "••••••")
+        XCTAssertEqual(pinTextFieldSecureField.value as? String, "•••••••")
 
         /*
          VII. Validity group test
@@ -130,8 +133,9 @@ final class InputFieldViewUITests: XCTestCase {
 
         /*
          IX. LeftView text is synchronized with PIN code
+             - Formatter keeps value stored as unformatted, only displays with formatting applied
          */
-        XCTAssertTrue(customViewsInputField.staticTexts["+421 \(randomPin)"].exists)
+        XCTAssertTrue(customViewsInputField.staticTexts["+421 \(randomPinString)"].exists)
 
         /*
          X. Realtime validation

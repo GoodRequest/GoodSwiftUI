@@ -130,7 +130,12 @@ extension InputFieldSampleView {
 
     private var pinCodeInputField: some View {
         // Text field
-        InputField(text: $password, title: "PIN code", hint: "At least 6 numbers")
+        InputField(
+            value: $password,
+            format: PinCodeFormatStyle(),
+            title: "PIN code",
+            hint: "At least 6 numbers"
+        )
 
         // Multiple custom traits
             .inputFieldTraits(
@@ -287,6 +292,42 @@ extension InputFieldSampleView {
     }
 
 }
+
+// MARK: - PinCodeFormatStyle
+
+struct PinCodeFormatStyle: ParseableFormatStyle {
+
+    typealias Strategy = PinCodeParseStrategy
+    typealias FormatInput = String
+    typealias FormatOutput = String
+
+    /// Formats the input string by adding spaces..
+    func format(_ value: String) -> String {
+        let separator: Character = " "
+        let stride: Int = if value.count <= 6 { 3 } else { 4 }
+
+        return String(value.enumerated().map {
+            $0 > 0 && $0 % stride == 0 ? [separator, $1] : [$1]
+        }.joined())
+    }
+
+    var parseStrategy: PinCodeParseStrategy {
+        PinCodeParseStrategy()
+    }
+}
+
+// MARK: - ParseStrategy
+
+/// Parses a formatted identifier code by removing spaces before validation.
+struct PinCodeParseStrategy: ParseStrategy {
+    typealias ParseInput = String
+    typealias ParseOutput = String
+
+    func parse(_ value: String) throws -> String {
+        return value.replacingOccurrences(of: " ", with: "") // Remove spaces before validation
+    }
+}
+
 
 // MARK: - SwiftUI preview
 

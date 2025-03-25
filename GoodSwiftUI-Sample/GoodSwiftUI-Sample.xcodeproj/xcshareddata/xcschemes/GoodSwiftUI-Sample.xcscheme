@@ -36,17 +36,6 @@
       </TestPlans>
       <Testables>
          <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3FBFD6562D41194000E6E35A"
-               BuildableName = "sourcery_iOSUITests.xctest"
-               BlueprintName = "sourcery_iOSUITests"
-               ReferencedContainer = "container:GoodSwiftUI-Sample.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
