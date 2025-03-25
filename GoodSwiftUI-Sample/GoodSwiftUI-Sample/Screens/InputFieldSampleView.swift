@@ -15,6 +15,7 @@ struct InputFieldSampleView: View {
 
         case notFilip
         case pinTooShort
+        case pinTooLong
 
         var errorDescription: String? {
             switch self {
@@ -23,6 +24,9 @@ struct InputFieldSampleView: View {
 
             case .pinTooShort:
                 "PIN code must be at least 6 numbers long"
+
+            case .pinTooLong:
+                "PIN code is too long"
             }
         }
 
@@ -119,6 +123,9 @@ extension InputFieldSampleView {
         // Focus state binding to advance focus from keyboard action button (Continue)
             .bindFocusState($focusState, to: .name)
             .disabled(!nameEnabled)
+
+        // Accessibility identifier for UI tests
+            .accessibilityIdentifier("nameTextField")
     }
 
     private var pinCodeInputField: some View {
@@ -138,11 +145,21 @@ extension InputFieldSampleView {
                     password?.count ?? 0 >= 6
                 }
                 .failWith(error: RegistrationError.pinTooShort)
+                .realtime()
+
+                Criterion { password in
+                    password?.count ?? 1000 <= 8
+                }
+                .failWith(error: RegistrationError.pinTooLong)
+                .realtime()
             }
 
             .validityGroup($validityGroup)
             .bindFocusState($focusState, to: .pin)
             .disabled(!passwordEnabled)
+
+        // Accessibility identifier for UI tests
+            .accessibilityIdentifier("pinTextField")
     }
 
     private var percentFormattedInputField: some View {
@@ -185,7 +202,8 @@ extension InputFieldSampleView {
                 }
             }
         )
-        .alert("Alert", isPresented: $showsRightAlert, actions: {})
+        .alert("Right button alert", isPresented: $showsRightAlert, actions: {})
+        .accessibilityIdentifier("customViewsInputField")
     }
 
     private var validityGroups: some View {

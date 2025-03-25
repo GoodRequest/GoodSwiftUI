@@ -52,6 +52,14 @@ import GoodStructs
 
     internal var criteria: [Criterion] = []
 
+    internal init(criteria: [Criterion]) {
+        self.criteria = criteria
+    }
+
+    internal init(realtime criteria: [Criterion]) {
+        self.criteria = criteria.filter { $0.isRealtime }
+    }
+
     public func isValid(input: String?) -> Bool {
         validate(input: input).isNil
     }
@@ -82,6 +90,7 @@ import GoodStructs
     // MARK: - Variables
 
     private(set) internal var error: any ValidationError = InternalValidationError.invalid
+    private(set) internal var isRealtime: Bool = false
 
     // MARK: - Constants
 
@@ -103,6 +112,12 @@ import GoodStructs
     public func failWith(error: any ValidationError) -> Self {
         var mutableSelf = self
         mutableSelf.error = error
+        return mutableSelf
+    }
+
+    public func realtime() -> Self {
+        var mutableSelf = self
+        mutableSelf.isRealtime = true
         return mutableSelf
     }
 

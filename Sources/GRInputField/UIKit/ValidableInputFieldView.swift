@@ -45,12 +45,15 @@ public class ValidableInputFieldView: InputFieldView {
     /// Requests validation of this text fields' content. Text field will automatically update the appearance to
     /// valid/invalid state, depending on the result of validation.
     ///
-    /// If no validator is set, this function will crash. Please make sure to set validation criteria before
-    /// requesting validation.
+    /// Please make sure to set validation criteria before requesting validation. Otherwise the result will
+    /// be always `false` and the function will fail assertion in debug builds.
     /// - Returns: `true` when content is valid, `false` otherwise
     @discardableResult
     public func validate() -> Bool {
-        guard let validator = validator?() else { fatalError("Validator not set") }
+        guard let validator = validator?() else {
+            assertionFailure("Validator not set")
+            return false
+        }
 
         if let error = validator.validate(input: self.text) {
             fail(with: error.localizedDescription)
@@ -80,7 +83,19 @@ public class ValidableInputFieldView: InputFieldView {
             .map { [weak self] _ in self?.validator?().validate(input: self?.text) }
             .sink { [weak self] error in
                 if let error { self?.fail(with: error.localizedDescription) }
-                self?.afterValidation?(error) // If wrapped in UIViewRepresentable, update SwiftUI state here
+
+                // If wrapped in UIViewRepresentable, update SwiftUI state here
+                self?.afterValidation?(error)
+            }
+            .store(in: &cancellables)
+
+        editingChangedPublisher
+            .map { [weak self] _ in
+                Validator(realtime: self?.validator?().asCriteria() ?? [])
+                    .validate(input: self?.text)
+            }
+            .sink { [weak self] error in
+                if let error { self?.failSilently(with: error.localizedDescription) }
             }
             .store(in: &cancellables)
     }
