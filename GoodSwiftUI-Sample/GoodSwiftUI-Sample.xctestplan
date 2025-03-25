@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "A9E859BF-4B7D-4824-A00F-E395EC0CB8EB",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:GoodSwiftUI-Sample.xcodeproj",
+      "identifier" : "5D740EA829B0BE0100975B8C",
+      "name" : "GoodSwiftUI-Sample"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:GoodSwiftUI-Sample.xcodeproj",
+        "identifier" : "0942DDDB2D91CB61006E7B2D",
+        "name" : "GoodSwiftUI-UITests"
+      }
+    }
+  ],
+  "version" : 1
+}
