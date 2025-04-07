@@ -27,17 +27,21 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      shouldAutocreateTestPlan = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES">
+      <TestPlans>
+         <TestPlanReference
+            reference = "container:GoodSwiftUI-Sample.xctestplan"
+            default = "YES">
+         </TestPlanReference>
+      </TestPlans>
       <Testables>
          <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3FBFD6562D41194000E6E35A"
-               BuildableName = "sourcery_iOSUITests.xctest"
-               BlueprintName = "sourcery_iOSUITests"
+               BlueprintIdentifier = "0942DDDB2D91CB61006E7B2D"
+               BuildableName = "GoodSwiftUI-UITests.xctest"
+               BlueprintName = "GoodSwiftUI-UITests"
                ReferencedContainer = "container:GoodSwiftUI-Sample.xcodeproj">
             </BuildableReference>
          </TestableReference>

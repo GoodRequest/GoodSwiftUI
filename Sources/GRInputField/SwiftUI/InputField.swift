@@ -268,7 +268,7 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
     // MARK: - Validation
 
     private func syncValidationState(uiViewState validationState: ValidationState, context: InputField.Context) {
-        Task { @MainActor in
+        DispatchQueue.main.async {
             validityGroup.updateValue(
                 validationState,
                 forKey: context.coordinator.textFieldUUID
@@ -294,7 +294,11 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
 
     private func updateValidationState(uiView: ValidableInputFieldView, context: Context) {
         let previousValidationState = validityGroup[context.coordinator.textFieldUUID]
-        let validationError = criteria().validate(input: text)
+
+        let validator = criteria()
+        let validationError = validator.validate(input: text)
+        let realtimeError = Validator(realtime: validator.asCriteria()).validate(input: text)
+
         let newValidationState: ValidationState = if let validationError {
             .error(validationError)
         } else {
@@ -308,6 +312,14 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
             } else {
                 changeValidationState(to: newValidationState, uiView: uiView, context: context)
             }
+        }
+
+        if let realtimeError, !uiView.text.isEmpty {
+            changeValidationState(
+                to: .error(realtimeError),
+                uiView: uiView,
+                context: context
+            )
         }
 
         if case .pending = previousValidationState {
