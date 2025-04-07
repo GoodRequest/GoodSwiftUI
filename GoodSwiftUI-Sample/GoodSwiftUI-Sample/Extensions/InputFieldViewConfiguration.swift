@@ -11,7 +11,7 @@ import GRInputField
 extension InputFieldView {
 
     static func configureAppearance() {
-        let customAppearance = InputFieldAppearance(
+        let globalAppearance = InputFieldAppearance(
             titleFont: UIFont.preferredFont(for: .caption1, weight: .regular, defaultSize: 12.0),
             titleColor: UIColor.systemBlue,
             textFieldTintColor: UIColor.systemBlue,
@@ -33,14 +33,14 @@ extension InputFieldView {
                 placeholderColor: UIColor.darkGray,
                 contentBackgroundColor: UIColor.tertiarySystemBackground,
                 textFieldTextColor: UIColor.systemBlue,
-                borderColor: UIColor.gray,
+                borderColor: UIColor.black,
                 hintColor: UIColor.darkGray
             ),
             disabled: InputFieldViewStateAppearance(
                 placeholderColor: UIColor.darkGray,
                 contentBackgroundColor: UIColor.secondarySystemBackground,
                 textFieldTextColor: UIColor.darkGray,
-                borderColor: UIColor.gray,
+                borderColor: UIColor.systemGray2,
                 hintColor: UIColor.darkGray
             ),
             failed: InputFieldViewStateAppearance(
@@ -52,8 +52,53 @@ extension InputFieldView {
             )
         )
 
-        InputFieldView.defaultAppearance = customAppearance
+        InputFieldView.defaultAppearance = globalAppearance
     }
+
+}
+
+extension InputFieldAppearance {
+
+    static let custom = InputFieldAppearance(
+        titleFont: UIFont.preferredFont(for: .title2, weight: .regular, defaultSize: 20),
+        titleColor: UIColor.brown,
+        textFieldTintColor: UIColor.brown,
+        textFieldFont: UIFont.preferredFont(for: .title2, weight: .regular, defaultSize: 30.0),
+        hintFont: UIFont.preferredFont(for: .title2, weight: .thin, defaultSize: 20.0),
+        borderWidth: 3,
+        cornerRadius: 20,
+        height: 56,
+        eyeImageHidden: UIImage(systemName: "eye"),
+        eyeImageVisible: UIImage(systemName: "eye.slash"),
+        enabled: InputFieldViewStateAppearance(
+            placeholderColor: UIColor.green.withAlphaComponent(0.5),
+            contentBackgroundColor: UIColor.yellow.withAlphaComponent(0.1),
+            textFieldTextColor: UIColor.green,
+            borderColor: UIColor.systemMint,
+            hintColor: UIColor.darkGray
+        ),
+        selected: InputFieldViewStateAppearance(
+            placeholderColor: UIColor.green.withAlphaComponent(0.5),
+            contentBackgroundColor: UIColor.yellow.withAlphaComponent(0.1),
+            textFieldTextColor: UIColor.green,
+            borderColor: UIColor.green,
+            hintColor: UIColor.darkGray
+        ),
+        disabled: InputFieldViewStateAppearance(
+            placeholderColor: UIColor.darkGray,
+            contentBackgroundColor: UIColor.secondarySystemBackground,
+            textFieldTextColor: UIColor.green.withAlphaComponent(0.5),
+            borderColor: UIColor.systemMint.withAlphaComponent(0.2),
+            hintColor: UIColor.darkGray
+        ),
+        failed: InputFieldViewStateAppearance(
+            placeholderColor: UIColor.darkGray,
+            contentBackgroundColor: UIColor.tertiarySystemBackground,
+            textFieldTextColor:  UIColor.green,
+            borderColor: UIColor.purple,
+            hintColor: UIColor.systemRed
+        )
+    )
 
 }
 
