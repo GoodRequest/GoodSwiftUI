@@ -85,6 +85,7 @@ public class InputFieldView: UIView {
 
     private let titleLabel = UILabel().then {
         $0.adjustsFontForContentSizeCategory = true
+        $0.isAccessibilityElement = false
     }
 
     private let contentView = UIView()
@@ -92,6 +93,7 @@ public class InputFieldView: UIView {
     private let leftContainerImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        $0.isAccessibilityElement = false
     }
 
     private let textField = UITextField().then {
@@ -116,6 +118,7 @@ public class InputFieldView: UIView {
     private let hintLabel = UILabel().then {
         $0.adjustsFontForContentSizeCategory = true
         $0.numberOfLines = 2
+        $0.isAccessibilityElement = false
     }
 
     // MARK: - Variables
@@ -131,6 +134,7 @@ public class InputFieldView: UIView {
         set {
             textField.text = newValue
             editingChangedSubject.send(newValue)
+            accessibilityValue = newValue
         }
     }
 
@@ -163,6 +167,61 @@ public class InputFieldView: UIView {
 
     private let editingChangedSubject = PassthroughSubject<String, Never>()
     private(set) public lazy var editingChangedPublisher = editingChangedSubject.eraseToAnyPublisher()
+    
+    // MARK: - Accessibility
+
+    public override var accessibilityIdentifier: String? {
+        get {
+            textField.accessibilityIdentifier
+        } set {
+            textField.accessibilityIdentifier = newValue
+        }
+    }
+
+    public override var accessibilityLabel: String? {
+        get {
+            textField.accessibilityLabel
+        } set {
+            textField.accessibilityLabel = newValue
+        }
+    }
+    
+    public override var accessibilityHint: String? {
+        get {
+            textField.accessibilityHint
+        } set {
+            textField.accessibilityHint = newValue
+        }
+    }
+    
+    public override var accessibilityValue: String? {
+        get {
+            if isSecureTextEntry {
+                return textField.isSecureTextEntry ? textField.accessibilityValue : text
+            } else {
+                return textField.accessibilityValue
+            }
+        } set {
+            guard !isSecureTextEntry else { return }
+            
+            textField.accessibilityValue = newValue
+        }
+    }
+    
+    public var showPasswordAccessibilityLabel: String? {
+        didSet {
+            guard textField.isSecureTextEntry else { return }
+            
+            eyeButton.accessibilityLabel = showPasswordAccessibilityLabel
+        }
+    }
+    public var hidePasswordAccessibilityLabel: String? {
+        didSet {
+            guard !textField.isSecureTextEntry else { return }
+            
+            eyeButton.accessibilityLabel = hidePasswordAccessibilityLabel
+        }
+    }
 
     // MARK: - Initializer
 
@@ -189,6 +248,9 @@ private extension InputFieldView {
         addSubviews()
         setupConstraints()
         setupActionHandlers()
+        
+        // Accessiblity will be handled by the UITextField itself
+        self.isAccessibilityElement = false
     }
 
     func setupAppearance() {
@@ -236,6 +298,8 @@ private extension InputFieldView {
 
         hintLabel.textColor = standardAppearance.enabled?.hintColor
         hintLabel.text = hint
+        hintLabel.isAccessibilityElement = false
+        accessibilityHint = hint
 
         textField.attributedPlaceholder = NSAttributedString(
             string: textField.placeholder ?? C.emptyString,
@@ -252,6 +316,8 @@ private extension InputFieldView {
 
         hintLabel.textColor = standardAppearance.disabled?.hintColor
         hintLabel.text = hint
+        hintLabel.isAccessibilityElement = false
+        accessibilityHint = hint
 
         textField.attributedPlaceholder = NSAttributedString(
             string: textField.placeholder ?? C.emptyString,
@@ -267,6 +333,8 @@ private extension InputFieldView {
 
         hintLabel.textColor = standardAppearance.selected?.hintColor
         hintLabel.text = hint
+        hintLabel.isAccessibilityElement = false
+        accessibilityHint = hint
 
         textField.attributedPlaceholder = NSAttributedString(
             string: textField.placeholder ?? C.emptyString,
@@ -282,6 +350,10 @@ private extension InputFieldView {
 
         hintLabel.textColor = standardAppearance.failed?.hintColor
         hintLabel.text = (hint == nil) ? (nil) : (message ?? hint)
+        
+        hintLabel.isAccessibilityElement = true
+        accessibilityHint = (hint == nil) ? (nil) : (message ?? hint)
+        UIAccessibility.post(notification: .layoutChanged, argument: hintLabel)
 
         textField.attributedPlaceholder = NSAttributedString(
             string: textField.placeholder ?? C.emptyString,
@@ -399,6 +471,12 @@ private extension InputFieldView {
         eyeButton.isHidden = false
         eyeButton.setImage(eyeImage, for: .normal)
         textField.isSecureTextEntry = isSecure
+        eyeButton.accessibilityLabel = isSecure
+            ? showPasswordAccessibilityLabel
+            : hidePasswordAccessibilityLabel
+        eyeButton.accessibilityIdentifier = isSecure
+            ? "show"
+            : "hide"
     }
 
     func trimWhitespaceIfAllowed() {
@@ -593,6 +671,9 @@ public extension InputFieldView {
 
         /// Text
         textField.text = model.text
+        accessibilityValue = textField.text
+        accessibilityHint = hint
+        accessibilityLabel = titleLabel.text
     }
 
     func fail(with errorMessage: String?) {

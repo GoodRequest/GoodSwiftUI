@@ -106,6 +106,10 @@ extension InputFieldSampleView {
     private var nameInputField: some View {
         // Text field
         InputField(text: $name, title: "Name", placeholder: "Jožko", hint: "Text is limited to 10 characters")
+        // Override of default accessibility label
+            .setAccessibilityLabel("Fill the name")
+        // Accessibility identifier for UI tests
+            .setAccessibilityIdentifier("nameTextField")
 
         // "Continue" keyboard action button
             .inputFieldTraits(returnKeyType: .continue)
@@ -123,9 +127,6 @@ extension InputFieldSampleView {
         // Focus state binding to advance focus from keyboard action button (Continue)
             .bindFocusState($focusState, to: .name)
             .disabled(!nameEnabled)
-
-        // Accessibility identifier for UI tests
-            .accessibilityIdentifier("nameTextField")
     }
 
     private var pinCodeInputField: some View {
@@ -143,6 +144,12 @@ extension InputFieldSampleView {
                 numpadReturnKeyTitle: "Done",
                 isSecureTextEntry: true
             )
+        
+        // Setting accessibility labels for eye Button (secureField)
+            .setEyeButtonAccessibilityLabel(showLabel: "Show PIN", hideLabel: "Hide PIN")
+        
+        // Accessibility identifier for UI tests
+            .setAccessibilityIdentifier("pinTextField")
 
         // Custom validation criteria closure
             .validationCriteria {
@@ -162,9 +169,6 @@ extension InputFieldSampleView {
             .validityGroup($validityGroup)
             .bindFocusState($focusState, to: .pin)
             .disabled(!passwordEnabled)
-
-        // Accessibility identifier for UI tests
-            .accessibilityIdentifier("pinTextField")
     }
 
     private var percentFormattedInputField: some View {
@@ -195,6 +199,8 @@ extension InputFieldSampleView {
             hint: nil,
             leftView: {
                 Text("+421 \(password)")
+                    .accessibilityLabel("Predvoľba")
+                    .accessibilityValue("+421 \(password)")
             },
             rightView: {
                 Button {
@@ -207,8 +213,8 @@ extension InputFieldSampleView {
                 }
             }
         )
+        .setAccessibilityIdentifier("customViewsInputField")
         .alert("Right button alert", isPresented: $showsRightAlert, actions: {})
-        .accessibilityIdentifier("customViewsInputField")
     }
 
     private var validityGroups: some View {
