@@ -9,10 +9,23 @@
 /* Begin PBXBuildFile section */
 		3F9F28482A3AECC700D92CA2 /* GRAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 3F9F28472A3AECC700D92CA2 /* GRAsyncImage */; };
 		5D740EC629B0BE7300975B8C /* GoodSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 5D740EC529B0BE7300975B8C /* GoodSwiftUI */; };
+		7837A1902E0EC10100322920 /* GRButton in Frameworks */ = {isa = PBXBuildFile; productRef = 7837A18F2E0EC10100322920 /* GRButton */; };
+		7859231A2E0EBF8100AE0B16 /* InlineSnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 785923192E0EBF8100AE0B16 /* InlineSnapshotTesting */; };
+		7859231C2E0EBF8100AE0B16 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 7859231B2E0EBF8100AE0B16 /* SnapshotTesting */; };
+		7859231E2E0EBF8100AE0B16 /* SnapshotTestingCustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 7859231D2E0EBF8100AE0B16 /* SnapshotTestingCustomDump */; };
+		78C2ACE02E12A0F700CD05C5 /* GRToggle in Frameworks */ = {isa = PBXBuildFile; productRef = 78C2ACDF2E12A0F700CD05C5 /* GRToggle */; };
+		78EF6BA02E1E4ED000BCE708 /* GRInputField in Frameworks */ = {isa = PBXBuildFile; productRef = 78EF6B9F2E1E4ED000BCE708 /* GRInputField */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		0942DDE22D91CB61006E7B2D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5D740EA129B0BE0100975B8C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5D740EA829B0BE0100975B8C;
+			remoteInfo = "GoodSwiftUI-Sample";
+		};
+		785923132E0EBEE400AE0B16 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5D740EA129B0BE0100975B8C /* Project object */;
 			proxyType = 1;
@@ -27,6 +40,7 @@
 		5D740EA929B0BE0100975B8C /* GoodSwiftUI-Sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GoodSwiftUI-Sample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D740EC329B0BE5F00975B8C /* GoodSwiftUI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = GoodSwiftUI; path = ..; sourceTree = "<group>"; };
 		78062C8D2CEDD3BE00281C04 /* GRButtonSampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GRButtonSampleView.swift; sourceTree = "<group>"; };
+		7859230D2E0EBEE400AE0B16 /* GoodSwiftUI-SnapshotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "GoodSwiftUI-SnapshotTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		78B2DC2C2CF70B680053DF97 /* GRToggleSampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GRToggleSampleView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -43,6 +57,7 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		0942DDDD2D91CB61006E7B2D /* GoodSwiftUI-UITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "GoodSwiftUI-UITests"; sourceTree = "<group>"; };
 		3F19A5DC2D41278600C91600 /* GoodSwiftUI-Sample */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F19A5E92D41278600C91600 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "GoodSwiftUI-Sample"; sourceTree = "<group>"; };
+		7859230E2E0EBEE400AE0B16 /* GoodSwiftUI-SnapshotTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "GoodSwiftUI-SnapshotTests"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +74,19 @@
 			files = (
 				3F9F28482A3AECC700D92CA2 /* GRAsyncImage in Frameworks */,
 				5D740EC629B0BE7300975B8C /* GoodSwiftUI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7859230A2E0EBEE400AE0B16 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				78C2ACE02E12A0F700CD05C5 /* GRToggle in Frameworks */,
+				78EF6BA02E1E4ED000BCE708 /* GRInputField in Frameworks */,
+				7859231E2E0EBF8100AE0B16 /* SnapshotTestingCustomDump in Frameworks */,
+				7837A1902E0EC10100322920 /* GRButton in Frameworks */,
+				7859231A2E0EBF8100AE0B16 /* InlineSnapshotTesting in Frameworks */,
+				7859231C2E0EBF8100AE0B16 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,8 +109,10 @@
 				5D740EC229B0BE5F00975B8C /* Packages */,
 				3F19A5DC2D41278600C91600 /* GoodSwiftUI-Sample */,
 				0942DDDD2D91CB61006E7B2D /* GoodSwiftUI-UITests */,
+				7859230E2E0EBEE400AE0B16 /* GoodSwiftUI-SnapshotTests */,
 				5D740EAA29B0BE0100975B8C /* Products */,
 				3FA663A22D6F164F00269137 /* Recovered References */,
+				7837A18E2E0EC10100322920 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -91,6 +121,7 @@
 			children = (
 				5D740EA929B0BE0100975B8C /* GoodSwiftUI-Sample.app */,
 				0942DDDC2D91CB61006E7B2D /* GoodSwiftUI-UITests.xctest */,
+				7859230D2E0EBEE400AE0B16 /* GoodSwiftUI-SnapshotTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -101,6 +132,13 @@
 				5D740EC329B0BE5F00975B8C /* GoodSwiftUI */,
 			);
 			name = Packages;
+			sourceTree = "<group>";
+		};
+		7837A18E2E0EC10100322920 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -153,6 +191,35 @@
 			productReference = 5D740EA929B0BE0100975B8C /* GoodSwiftUI-Sample.app */;
 			productType = "com.apple.product-type.application";
 		};
+		7859230C2E0EBEE400AE0B16 /* GoodSwiftUI-SnapshotTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 785923172E0EBEE400AE0B16 /* Build configuration list for PBXNativeTarget "GoodSwiftUI-SnapshotTests" */;
+			buildPhases = (
+				785923092E0EBEE400AE0B16 /* Sources */,
+				7859230A2E0EBEE400AE0B16 /* Frameworks */,
+				7859230B2E0EBEE400AE0B16 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				785923142E0EBEE400AE0B16 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				7859230E2E0EBEE400AE0B16 /* GoodSwiftUI-SnapshotTests */,
+			);
+			name = "GoodSwiftUI-SnapshotTests";
+			packageProductDependencies = (
+				785923192E0EBF8100AE0B16 /* InlineSnapshotTesting */,
+				7859231B2E0EBF8100AE0B16 /* SnapshotTesting */,
+				7859231D2E0EBF8100AE0B16 /* SnapshotTestingCustomDump */,
+				7837A18F2E0EC10100322920 /* GRButton */,
+				78C2ACDF2E12A0F700CD05C5 /* GRToggle */,
+				78EF6B9F2E1E4ED000BCE708 /* GRInputField */,
+			);
+			productName = "GoodSwiftUI-SnapshotTests";
+			productReference = 7859230D2E0EBEE400AE0B16 /* GoodSwiftUI-SnapshotTests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -170,6 +237,10 @@
 					5D740EA829B0BE0100975B8C = {
 						CreatedOnToolsVersion = 14.2;
 					};
+					7859230C2E0EBEE400AE0B16 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 5D740EA829B0BE0100975B8C;
+					};
 				};
 			};
 			buildConfigurationList = 5D740EA429B0BE0100975B8C /* Build configuration list for PBXProject "GoodSwiftUI-Sample" */;
@@ -181,12 +252,16 @@
 				Base,
 			);
 			mainGroup = 5D740EA029B0BE0100975B8C;
+			packageReferences = (
+				785923182E0EBF8100AE0B16 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+			);
 			productRefGroup = 5D740EAA29B0BE0100975B8C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				5D740EA829B0BE0100975B8C /* GoodSwiftUI-Sample */,
 				0942DDDB2D91CB61006E7B2D /* GoodSwiftUI-UITests */,
+				7859230C2E0EBEE400AE0B16 /* GoodSwiftUI-SnapshotTests */,
 			);
 		};
 /* End PBXProject section */
@@ -200,6 +275,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		5D740EA729B0BE0100975B8C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7859230B2E0EBEE400AE0B16 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -223,6 +305,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		785923092E0EBEE400AE0B16 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -230,6 +319,11 @@
 			isa = PBXTargetDependency;
 			target = 5D740EA829B0BE0100975B8C /* GoodSwiftUI-Sample */;
 			targetProxy = 0942DDE22D91CB61006E7B2D /* PBXContainerItemProxy */;
+		};
+		785923142E0EBEE400AE0B16 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5D740EA829B0BE0100975B8C /* GoodSwiftUI-Sample */;
+			targetProxy = 785923132E0EBEE400AE0B16 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -461,6 +555,53 @@
 			};
 			name = Release;
 		};
+		785923152E0EBEE400AE0B16 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = SYBRVMM79X;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				OTHER_SWIFT_FLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.GoodSwiftUI-SnapshotTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "GoodSwiftUI-Sample";
+			};
+			name = Debug;
+		};
+		785923162E0EBEE400AE0B16 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = SYBRVMM79X;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				OTHER_SWIFT_FLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.GoodSwiftUI-SnapshotTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "GoodSwiftUI-Sample";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -491,7 +632,27 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		785923172E0EBEE400AE0B16 /* Build configuration list for PBXNativeTarget "GoodSwiftUI-SnapshotTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				785923152E0EBEE400AE0B16 /* Debug */,
+				785923162E0EBEE400AE0B16 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		785923182E0EBF8100AE0B16 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.18.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		3F9F28472A3AECC700D92CA2 /* GRAsyncImage */ = {
@@ -501,6 +662,33 @@
 		5D740EC529B0BE7300975B8C /* GoodSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = GoodSwiftUI;
+		};
+		7837A18F2E0EC10100322920 /* GRButton */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GRButton;
+		};
+		785923192E0EBF8100AE0B16 /* InlineSnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 785923182E0EBF8100AE0B16 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = InlineSnapshotTesting;
+		};
+		7859231B2E0EBF8100AE0B16 /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 785923182E0EBF8100AE0B16 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
+		};
+		7859231D2E0EBF8100AE0B16 /* SnapshotTestingCustomDump */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 785923182E0EBF8100AE0B16 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTestingCustomDump;
+		};
+		78C2ACDF2E12A0F700CD05C5 /* GRToggle */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GRToggle;
+		};
+		78EF6B9F2E1E4ED000BCE708 /* GRInputField */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GRInputField;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
