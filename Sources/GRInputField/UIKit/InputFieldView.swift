@@ -641,13 +641,13 @@ public extension InputFieldView {
     }
 
     var isSelected: Bool { textField.isSelected }
-
-    func setup(with model: Model, customAppearance: InputFieldAppearance? = nil) {
-        if let customAppearance {
-            standardAppearance = customAppearance
-            setupAppearance()
-        }
-
+    
+    func setupAppearancee(_ customAppearance: InputFieldAppearance) {
+        standardAppearance = customAppearance
+        setupAppearance()
+    }
+    
+    func setup(with model: Model) {
         /// Traits
         setupTraits(traits: model.traits ?? .default)
         setupToolbarIfNeeded(traits: model.traits ?? .default)

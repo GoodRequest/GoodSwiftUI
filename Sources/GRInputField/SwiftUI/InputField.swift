@@ -185,7 +185,10 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
             traits: traits
         )
 
-        view.setup(with: model, customAppearance: customAppearance)
+        if let customAppearance {
+            view.setupAppearancee(customAppearance)
+        }
+        view.setup(with: model)
         view.attachTextFieldDelegate(context.coordinator)
 
         view.setValidationCriteria(criteria)
@@ -429,7 +432,7 @@ public extension InputField {
         return modifiedSelf
     }
 
-    func inputFieldStyle(_ appearance: InputFieldAppearance) -> Self {
+    func inputFieldAppearance(_ appearance: InputFieldAppearance) -> Self {
         var modifiedSelf = self
         modifiedSelf.customAppearance = appearance
         return modifiedSelf
