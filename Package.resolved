@@ -1,22 +1,13 @@
 {
-  "originHash" : "5a3e29e9f54eef0b3f74b7a499302ccb3ef302ad2bf45cf1964b5ba7f8a6ff8c",
+  "originHash" : "644371904a6ca2f1d71f7dbe8d023d98a6196db86bed27da11cc98eaea1f6388",
   "pins" : [
-    {
-      "identity" : "combineext",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/CombineCommunity/CombineExt.git",
-      "state" : {
-        "revision" : "d7b896fa9ca8b47fa7bcde6b43ef9b70bf8c1f56",
-        "version" : "1.8.1"
-      }
-    },
     {
       "identity" : "goodextensions-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/GoodRequest/GoodExtensions-iOS.git",
       "state" : {
-        "revision" : "d06f82844f041c6d8d1462753c9ce6bb069ec976",
-        "version" : "2.0.2"
+        "revision" : "a003cbdf8cbce9f135e9e0ae6a15d962d3607800",
+        "version" : "3.0.0"
       }
     },
     {
