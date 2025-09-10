@@ -147,7 +147,7 @@ public class InputFieldView: UIView {
     }
 
     /// Appearance can be set globally using `configureAppearance()` by modifying the `defaultAppearance`,
-    /// or locally by sending an appearance in `setup(with: Model, customAppearance: InputFieldAppearance?)`.
+    /// or locally by sending an appearance in `setupAppearance(_ customAppearance: InputFieldAppearance? = nil)`.
     open var standardAppearance: InputFieldAppearance = defaultAppearance
     public static var defaultAppearance: InputFieldAppearance = .default
 
@@ -642,8 +642,8 @@ public extension InputFieldView {
 
     var isSelected: Bool { textField.isSelected }
     
-    func setupAppearancee(_ customAppearance: InputFieldAppearance) {
-        standardAppearance = customAppearance
+    func setupAppearance(_ customAppearance: InputFieldAppearance? = nil) {
+        standardAppearance = customAppearance ?? Self.defaultAppearance
         setupAppearance()
     }
     

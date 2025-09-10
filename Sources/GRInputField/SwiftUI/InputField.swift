@@ -49,7 +49,7 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
     private var showPasswordAccessibilityLabel: String?
     private var hidePasswordAccessibilityLabel: String?
 
-    /// Change appearance with `.inputFieldStyle()` modifier
+    /// Change appearance with `.inputFieldAppearance()` modifier
     private var customAppearance: InputFieldAppearance?
 
     // MARK: - Initialization
@@ -185,9 +185,7 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
             traits: traits
         )
 
-        if let customAppearance {
-            view.setupAppearancee(customAppearance)
-        }
+        view.setupAppearance(customAppearance)
         view.setup(with: model)
         view.attachTextFieldDelegate(context.coordinator)
 
@@ -432,7 +430,7 @@ public extension InputField {
         return modifiedSelf
     }
 
-    func inputFieldAppearance(_ appearance: InputFieldAppearance) -> Self {
+    func inputFieldAppearance(_ appearance: InputFieldAppearance?) -> Self {
         var modifiedSelf = self
         modifiedSelf.customAppearance = appearance
         return modifiedSelf
