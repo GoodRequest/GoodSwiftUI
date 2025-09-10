@@ -49,6 +49,9 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
     private var showPasswordAccessibilityLabel: String?
     private var hidePasswordAccessibilityLabel: String?
 
+    /// Change appearance with `.inputFieldAppearance()` modifier
+    private var customAppearance: InputFieldAppearance?
+
     // MARK: - Initialization
 
     public init(
@@ -182,6 +185,7 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
             traits: traits
         )
 
+        view.setupAppearance(customAppearance)
         view.setup(with: model)
         view.attachTextFieldDelegate(context.coordinator)
 
@@ -423,6 +427,12 @@ public extension InputField {
     func validationCriteria(@ValidatorBuilder _ criteria: @escaping MainSupplier<Validator>) -> Self {
         var modifiedSelf = self
         modifiedSelf.criteria = criteria
+        return modifiedSelf
+    }
+
+    func inputFieldAppearance(_ appearance: InputFieldAppearance?) -> Self {
+        var modifiedSelf = self
+        modifiedSelf.customAppearance = appearance
         return modifiedSelf
     }
 
