@@ -312,6 +312,9 @@ extension GRButtonAppearanceModel {
 
 #### Preset 1: iOS Native Style (Fastest - 10 seconds)
 ```swift
+import GRButton
+import GRToggle
+
 extension GRButtonAppearanceModel {
     static let primary = GRButtonAppearanceModel(
         backgroundColor: .blue,
@@ -351,6 +354,8 @@ extension GRToggleAppearance {
 
 #### Preset 2: Material Design Style
 ```swift
+import GRButton
+
 extension GRButtonAppearanceModel {
     static let primary = GRButtonAppearanceModel(
         backgroundColor: Color(red: 0.38, green: 0.49, blue: 0.95),  // Material Blue
@@ -368,6 +373,8 @@ extension GRButtonAppearanceModel {
 
 #### Preset 3: Minimal/Modern Style
 ```swift
+import GRButton
+
 extension GRButtonAppearanceModel {
     static let primary = GRButtonAppearanceModel(
         backgroundColor: .black,
@@ -623,6 +630,8 @@ Button(action: {}) { EmptyView() }
 
 ```swift
 // Option 1: In App struct
+import GRInputField
+
 @main
 struct MyApp: App {
     init() {
@@ -658,6 +667,8 @@ InputField(
 
 #### Pattern 2: Formatted Value Field
 ```swift
+import GRInputField
+
 @State private var value: Double = 0
 
 InputField(
@@ -671,6 +682,8 @@ InputField(
 
 #### Pattern 3: Field with Custom Views
 ```swift
+import GRInputField
+
 InputField(
     text: Binding<String>,
     title: String,
@@ -778,27 +791,49 @@ enum FormFields: Int, CaseIterable, Hashable {
 
 // Step 3: Bind to fields
 InputField(text: $email, title: "Email")
-    .bindFocusState($focusedField, to: .email)
     .inputFieldTraits(returnKeyType: .next)
+    .bindFocusState($focusedField, to: .email)
 
 InputField(text: $password, title: "Password")
-    .bindFocusState($focusedField, to: .password)
     .inputFieldTraits(returnKeyType: .next)
+    .bindFocusState($focusedField, to: .password)
 
 InputField(text: $confirm, title: "Confirm")
-    .bindFocusState($focusedField, to: .confirm)
     .inputFieldTraits(returnKeyType: .done)
+    .bindFocusState($focusedField, to: .confirm)
 ```
 
 ### Input Field Modifiers Reference
+
+#### Input Field Traits modifier - available traits
+
+```swift
+extension InputField {
+
+    func inputFieldTraits(
+        textContentType: UITextContentType? = .none,
+        autocapitalizationType: UITextAutocapitalizationType = .none,
+        autocorrectionType: UITextAutocorrectionType = .default,
+        keyboardType: UIKeyboardType = .default,
+        returnKeyType: UIReturnKeyType = .default,
+        numpadReturnKeyTitle: String? = "Done",
+        clearButtonMode: UITextField.ViewMode = .whileEditing,
+        isSecureTextEntry: Bool = false,
+        hapticsAllowed: Bool = true
+    ) -> Self { ... }
+
+}
+```
+
+#### Examples
 
 ```swift
 InputField(text: $text, title: "Username")
     // Keyboard configuration
     .inputFieldTraits(
+        autocapitalizationType: .none,
         keyboardType: .emailAddress,
         returnKeyType: .done,
-        autocapitalizationType: .none,
         isSecureTextEntry: false
     )
     
@@ -814,13 +849,13 @@ InputField(text: $text, title: "Username")
     .validationCriteria { /* ... */ }
     .validityGroup($validityGroup)
     
-    // Focus
-    .bindFocusState($focusState, to: .username)
-    
     // Actions
     .onSubmit { print("Submitted") }
     .onResign { print("Resigned") }
     .onEditingChanged { print("Changed") }
+
+    // Focus - must be last, because it will erase InputField to some View
+    .bindFocusState($focusState, to: .username)
     
     // State
     .disabled(false)
@@ -945,9 +980,9 @@ InputField(
     hint: "We'll never share your email"
 )
 .inputFieldTraits(
+    autocapitalizationType: .none,
     keyboardType: .emailAddress,
-    returnKeyType: .next,
-    autocapitalizationType: .none
+    returnKeyType: .next
 )
 .validationCriteria {
     Criterion.matches("[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}")
@@ -989,7 +1024,8 @@ InputField(text: $password, title: "Password", hint: "At least 8 characters with
 .toggleStyle(GRToggleStyle(
     appearance: GRToggleAppearance,
     style: GRToggleVariant,         // .checkbox, .radio, .circularCheck
-    size: GRToggleSize              // .small or .large
+    size: GRToggleSize,             // .small or .large
+    alignment: GRAlignment          // .leading or .trailing (position of the box/circle to the text)
 ))
 ```
 
@@ -1040,7 +1076,8 @@ Toggle(isOn: $isOn) {
 .toggleStyle(GRToggleStyle(
     appearance: .primary,
     style: .checkbox,
-    size: .large
+    size: .large,
+    alignment: .leading
 ))
 
 // Radio button
@@ -1319,9 +1356,9 @@ struct RegistrationForm: View {
                     placeholder: "email@example.com"
                 )
                 .inputFieldTraits(
+                    autocapitalizationType: .none,
                     keyboardType: .emailAddress,
                     returnKeyType: .next,
-                    autocapitalizationType: .none
                 )
                 .validationCriteria {
                     Criterion.matches("[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}")
@@ -1709,7 +1746,7 @@ struct ValidatedFormView: View {
     var body: some View {
         Form {
             InputField(text: $email, title: "Email", placeholder: "email@example.com")
-                .inputFieldTraits(keyboardType: .emailAddress, autocapitalizationType: .none)
+                .inputFieldTraits(autocapitalizationType: .none, keyboardType: .emailAddress)
                 .validationCriteria {
                     Criterion.matches("[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}")
                         .failWith(error: FormError.invalidEmail)
