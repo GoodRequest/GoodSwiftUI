@@ -106,6 +106,7 @@ extension InputFieldSampleView {
     private var nameInputField: some View {
         // Text field
         InputField(text: $name, title: "Name", placeholder: "Jožko", hint: "Text is limited to 10 characters")
+			.inputFieldAppearance(.custom)
         // Override of default accessibility label
             .setAccessibilityLabel("Fill the name")
         // Accessibility identifier for UI tests
