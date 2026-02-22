@@ -108,6 +108,56 @@ public struct InputField<LeftView: View, RightView: View>: UIViewRepresentable {
         self.hasFormatting = true
     }
 
+    // MARK: - Initialization - localized
+
+    @available(iOS 16.0, *)
+    public init(
+        text: Binding<String>,
+        title: LocalizedStringResource? = nil,
+        placeholder: LocalizedStringResource? = nil,
+        hint: LocalizedStringResource? = " ",
+        leftView: @escaping MainSupplier<LeftView> = { EmptyView() },
+        rightView: @escaping MainSupplier<RightView> = { EmptyView() }
+    ) {
+        let titleString: String? = if let title { String(localized: title) } else { nil }
+        let placeholderString: String? = if let placeholder { String(localized: placeholder) } else { nil }
+        let hintString: String? = if let hint { String(localized: hint) } else { nil }
+
+        self.init(
+            text: text,
+            title: titleString,
+            placeholder: placeholderString,
+            hint: hintString,
+            leftView: leftView,
+            rightView: rightView
+        )
+    }
+
+    @available(iOS 16.0, *)
+    public init<FormattedType, FormatterType: ParseableFormatStyle>(
+        value: Binding<FormattedType>,
+        format: FormatterType,
+        title: LocalizedStringResource? = nil,
+        placeholder: LocalizedStringResource? = nil,
+        hint: LocalizedStringResource? = " ",
+        leftView: @escaping MainSupplier<LeftView> = { EmptyView() },
+        rightView: @escaping MainSupplier<RightView> = { EmptyView() }
+    ) where FormatterType.FormatInput == FormattedType, FormatterType.FormatOutput == String {
+        let titleString: String? = if let title { String(localized: title) } else { nil }
+        let placeholderString: String? = if let placeholder { String(localized: placeholder) } else { nil }
+        let hintString: String? = if let hint { String(localized: hint) } else { nil }
+
+        self.init(
+            value: value,
+            format: format,
+            title: titleString,
+            placeholder: placeholderString,
+            hint: hintString,
+            leftView: leftView,
+            rightView: rightView
+        )
+    }
+
     // MARK: - Coordinator
 
     public class Coordinator: NSObject, UITextFieldDelegate {
